@@ -4,9 +4,11 @@ interface BlendedCursorProps {
   position: { x: number; y: number };
   isHoveringLink: boolean;
   isTransitioning: boolean;
+  isHoveringOrange: boolean;
+  isDarkMode: boolean;
 }
 
-export const BlendedCursor: React.FC<BlendedCursorProps> = ({ position, isHoveringLink, isTransitioning }) => {
+export const BlendedCursor: React.FC<BlendedCursorProps> = ({ position, isHoveringLink, isTransitioning, isHoveringOrange, isDarkMode }) => {
   const [applyCursorFadeIn, setApplyCursorFadeIn] = useState(false);
 
   useEffect(() => {
@@ -40,10 +42,10 @@ export const BlendedCursor: React.FC<BlendedCursorProps> = ({ position, isHoveri
           pointerEvents: 'none',
           transform: 'translate(-50%, -50%)',
           zIndex: 9999,
-          transition: 'width 0.2s ease, height 0.2s ease, opacity 0.5s ease-in-out',
+          transition: 'width 0.2s ease, height 0.2s ease, opacity 0.5s ease-in-out, background-color 0.2s ease',
           opacity: applyCursorFadeIn ? 1 : 0,
-          backgroundColor: 'white',
-          mixBlendMode: 'difference',
+          backgroundColor: isHoveringOrange ? (isDarkMode ? '#efeeee' : 'black') : 'white',
+          mixBlendMode: isHoveringOrange ? 'normal' : 'difference',
         }}
         aria-hidden="true"
       />

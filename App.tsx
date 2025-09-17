@@ -21,6 +21,7 @@ export default function App() {
   const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 });
   const [relativeCursorPosition, setRelativeCursorPosition] = useState({ x: -100, y: -100 });
   const [isHoveringLink, setIsHoveringLink] = useState(false);
+  const [isHoveringOrange, setIsHoveringOrange] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   
@@ -30,8 +31,10 @@ export default function App() {
     const handleMouseMove = (event: MouseEvent) => {
       setCursorPosition({ x: event.clientX, y: event.clientY });
       
-      // We still need the ref in App.tsx to pass it to the RightPanel,
-      // but the calculation is now scoped to where the ref is actually used.
+      const target = event.target as HTMLElement;
+      setIsHoveringLink(!!target.closest('a, button'));
+      setIsHoveringOrange(!!target.closest('.no-cursor-invert'));
+
       if (imageContainerRef.current) {
         const rect = imageContainerRef.current.getBoundingClientRect();
         setRelativeCursorPosition({
@@ -43,22 +46,8 @@ export default function App() {
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    const interactiveElements = document.querySelectorAll('a, button');
-    
-    const handleLinkEnter = () => setIsHoveringLink(true);
-    const handleLinkLeave = () => setIsHoveringLink(false);
-
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', handleLinkEnter);
-      el.addEventListener('mouseleave', handleLinkLeave);
-    });
-
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', handleLinkEnter);
-        el.removeEventListener('mouseleave', handleLinkLeave);
-      });
     };
   }, []);
 
@@ -110,7 +99,9 @@ export default function App() {
       <BlendedCursor 
         position={cursorPosition} 
         isHoveringLink={isHoveringLink} 
-        isTransitioning={isTransitioning} 
+        isTransitioning={isTransitioning}
+        isHoveringOrange={isHoveringOrange}
+        isDarkMode={isDarkMode}
       />
       
       <Header isDarkMode={isDarkMode} toggleDarkMode={handleThemeToggle} />

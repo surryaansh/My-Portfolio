@@ -17,7 +17,7 @@ export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode
   return (
     <div className={`w-full lg:col-span-1 flex flex-col lg:pr-6 pb-8 lg:pb-0 lg:border-r ${isDarkMode ? 'lg:border-[#efeeee]' : 'lg:border-black'}`}>
       <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
-        <span>02 WORK</span>
+        <span>02 PROJECT</span>
         <span>/02</span>
       </div>
       <div className="flex-1 flex flex-col pt-3">
@@ -32,7 +32,7 @@ export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode
                     onClick={() => setSelectedProject(project)}
                     className={`w-full text-left transition-all duration-200 ease-in-out leading-none md:leading-tight
                       ${isActive
-                        ? 'text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-[#FF4500]'
+                        ? 'text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-[#FF4500] no-cursor-invert'
                         : 'text-2xl font-normal tracking-tight'
                       }`
                     }
