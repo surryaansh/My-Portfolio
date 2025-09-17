@@ -8,7 +8,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
   const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
 
   return (
-    <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 py-8">
+    <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
       <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
         <span>03 WORK</span>
         <span>/03</span>
