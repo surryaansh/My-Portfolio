@@ -20,7 +20,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
       : 'text-gray-600'
   }`;
   const borderClasses = isDarkMode ? 'border-[#efeeee]' : 'border-black';
-  const iconClasses = "w-12 h-12 md:w-16 md:h-16 transition-transform duration-300 ease-in-out hover:scale-110";
+  const iconClasses = "w-16 h-16 md:w-20 md:h-20 transition-transform duration-300 ease-in-out hover:scale-110";
 
   return (
     <section className={`border-t ${borderClasses}`}>
@@ -28,7 +28,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
         <span>04 SKILLS</span>
         <span>/04</span>
       </div>
-      <div className="flex-1 flex flex-wrap items-center justify-center gap-x-8 sm:gap-x-12 md:gap-x-16 gap-y-2 py-3">
+      <div className="flex-1 flex flex-wrap items-center justify-center gap-x-10 sm:gap-x-14 md:gap-x-20 gap-y-4 py-4">
         <ReactSkillIcon className={iconClasses} />
         <NodeSkillIcon className={iconClasses} />
         <ExpressSkillIcon className={iconClasses} />
