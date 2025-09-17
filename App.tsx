@@ -125,7 +125,7 @@ export default function App() {
             relativeCursorPosition={relativeCursorPosition}
           />
         </section>
-        <section className={`flex flex-col lg:flex-row border-t divide-y lg:divide-y-0 lg:divide-x ${isDarkMode ? 'border-[#efeeee] divide-[#efeeee]' : 'border-black divide-black'}`}>
+        <section className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t divide-y lg:divide-y-0 ${isDarkMode ? 'border-[#efeeee] divide-[#efeeee]' : 'border-black divide-black'}`}>
             <ProjectsLeftPanel isDarkMode={isDarkMode} />
             <ProjectsRightPanel isDarkMode={isDarkMode} />
         </section>

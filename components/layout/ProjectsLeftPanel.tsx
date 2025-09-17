@@ -19,12 +19,12 @@ export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode
   const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
 
   return (
-    <div className="w-full lg:w-1/2 flex flex-col lg:pr-6 py-8">
+    <div className={`w-full lg:col-span-1 flex flex-col lg:pr-6 py-8 lg:border-r ${isDarkMode ? 'lg:border-[#efeeee]' : 'lg:border-black'}`}>
       <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
         <span>02 WORK</span>
         <span>/02</span>
       </div>
-      <div className="flex-1 flex flex-col justify-center pt-8 pb-12">
+      <div className="flex-1 flex flex-col justify-center pt-8">
         <nav>
           <ul onMouseLeave={() => setHoveredProject(null)}>
             {projects.map((project) => {
@@ -38,7 +38,7 @@ export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode
                     className={`w-full text-left transition-all duration-200 ease-in-out leading-none md:leading-tight
                       ${isActive
                         ? 'text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter text-[#FF4500]'
-                        : 'text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight'
+                        : 'text-4xl sm:text-5xl md:text-5xl font-bold tracking-tight'
                       }`
                     }
                   >
