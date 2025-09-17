@@ -5,7 +5,7 @@ import { RightPanel } from './components/layout/RightPanel.tsx';
 import { BlendedCursor } from './components/BlendedCursor.tsx';
 import { ProjectsLeftPanel } from './components/layout/ProjectsLeftPanel.tsx';
 import { ProjectsRightPanel } from './components/layout/ProjectsRightPanel.tsx';
-import { InvestorsSection } from './components/layout/InvestorsSection.tsx';
+import { SkillsSection } from './components/layout/InvestorsSection.tsx';
 
 // The ViewTransition API is not yet in standard TS libs, so we declare it here.
 declare global {
@@ -113,11 +113,11 @@ export default function App() {
             relativeCursorPosition={relativeCursorPosition}
           />
         </section>
-        <section className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[75vh] divide-y lg:divide-y-0 ${isDarkMode ? 'border-[#efeeee] divide-[#efeeee]' : 'border-black divide-black'}`}>
+        <section className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[50vh] divide-y lg:divide-y-0 ${isDarkMode ? 'border-[#efeeee] divide-[#efeeee]' : 'border-black divide-black'}`}>
             <ProjectsLeftPanel isDarkMode={isDarkMode} />
             <ProjectsRightPanel isDarkMode={isDarkMode} />
         </section>
-        <InvestorsSection isDarkMode={isDarkMode} />
+        <SkillsSection isDarkMode={isDarkMode} />
       </main>
     </div>
   );
