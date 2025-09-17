@@ -31,7 +31,7 @@ export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode
               const isActive = project === selectedProject;
 
               return (
-                <li key={project}>
+                <li key={project} className="mb-6">
                   <button
                     onClick={() => setSelectedProject(project)}
                     className={`w-full text-left transition-all duration-200 ease-in-out leading-none md:leading-tight
