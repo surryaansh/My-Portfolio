@@ -4,11 +4,9 @@ interface BlendedCursorProps {
   position: { x: number; y: number };
   isHoveringLink: boolean;
   isTransitioning: boolean;
-  isHoveringOrange: boolean;
-  isDarkMode: boolean;
 }
 
-export const BlendedCursor: React.FC<BlendedCursorProps> = ({ position, isHoveringLink, isTransitioning, isHoveringOrange, isDarkMode }) => {
+export const BlendedCursor: React.FC<BlendedCursorProps> = ({ position, isHoveringLink, isTransitioning }) => {
   const [applyCursorFadeIn, setApplyCursorFadeIn] = useState(false);
 
   useEffect(() => {
@@ -29,8 +27,6 @@ export const BlendedCursor: React.FC<BlendedCursorProps> = ({ position, isHoveri
     return null;
   }
 
-  const borderColor = isDarkMode ? '#efeeee' : 'black';
-
   const cursorStyle: React.CSSProperties = {
     position: 'fixed',
     top: position.y,
@@ -41,14 +37,10 @@ export const BlendedCursor: React.FC<BlendedCursorProps> = ({ position, isHoveri
     pointerEvents: 'none',
     transform: 'translate(-50%, -50%)',
     zIndex: 9999,
-    transition: 'width 0.2s ease, height 0.2s ease, opacity 0.5s ease-in-out, background-color 0.2s ease, border-color 0.2s ease',
+    transition: 'width 0.2s ease, height 0.2s ease, opacity 0.2s ease-in-out',
     opacity: applyCursorFadeIn ? 1 : 0,
-    boxSizing: 'border-box', // Ensure border doesn't add to the element's size
-    
-    // Conditional styles for hovering orange elements
-    mixBlendMode: isHoveringOrange ? 'normal' : 'difference',
-    backgroundColor: isHoveringOrange ? 'transparent' : 'white',
-    border: `2px solid ${isHoveringOrange ? borderColor : 'transparent'}`,
+    mixBlendMode: 'difference',
+    backgroundColor: 'white',
   };
 
   return (
