@@ -5,6 +5,7 @@ import { RightPanel } from './components/layout/RightPanel.tsx';
 import { BlendedCursor } from './components/BlendedCursor.tsx';
 import { ProjectsLeftPanel } from './components/layout/ProjectsLeftPanel.tsx';
 import { ProjectsRightPanel } from './components/layout/ProjectsRightPanel.tsx';
+import { InvestorsSection } from './components/layout/InvestorsSection.tsx';
 
 // The ViewTransition API is not yet in standard TS libs, so we declare it here.
 declare global {
@@ -116,6 +117,7 @@ export default function App() {
             <ProjectsLeftPanel isDarkMode={isDarkMode} />
             <ProjectsRightPanel isDarkMode={isDarkMode} />
         </section>
+        <InvestorsSection isDarkMode={isDarkMode} />
       </main>
     </div>
   );
