@@ -140,7 +140,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
         onMouseMove={handleMouseMove}
         style={{ cursor: 'grab' }}
       >
-        <div className="flex w-max items-center">
+        <div className="flex w-max items-center transform -translate-y-2">
           {[...skills, ...skills].map((skill, index) => (
             <div key={index} className={`flex-shrink-0 flex items-center justify-center ${skill.margin || defaultMargin}`}>
               <skill.component className={`${skill.size || iconClasses} ${skill.transform || ''}`} />
