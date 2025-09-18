@@ -6,7 +6,6 @@ import { MongoSkillIcon } from '../icons/skills/MongoSkillIcon.tsx';
 import { EthereumSkillIcon } from '../icons/skills/EthereumSkillIcon.tsx';
 import { SoliditySkillIcon } from '../icons/skills/SoliditySkillIcon.tsx';
 import { TypescriptSkillIcon } from '../icons/skills/TypescriptSkillIcon.tsx';
-import { TailwindSkillIcon } from '../icons/skills/TailwindSkillIcon.tsx';
 import { PythonSkillIcon } from '../icons/skills/PythonSkillIcon.tsx';
 
 interface SkillsSectionProps {
@@ -14,15 +13,14 @@ interface SkillsSectionProps {
 }
 
 const skills = [
-  ReactSkillIcon,
-  NodeSkillIcon,
-  ExpressSkillIcon,
-  MongoSkillIcon,
-  EthereumSkillIcon,
-  SoliditySkillIcon,
-  TypescriptSkillIcon,
-  TailwindSkillIcon,
-  PythonSkillIcon,
+  { component: ReactSkillIcon },
+  { component: NodeSkillIcon, transform: 'transform -translate-y-1.5' },
+  { component: ExpressSkillIcon, transform: 'transform translate-y-1.5' },
+  { component: MongoSkillIcon },
+  { component: EthereumSkillIcon, size: 'w-28 h-28 md:w-[8rem] md:h-[8rem]' },
+  { component: SoliditySkillIcon },
+  { component: TypescriptSkillIcon, size: 'w-28 h-28 md:w-[8rem] md:h-[8rem]' },
+  { component: PythonSkillIcon },
 ];
 
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
@@ -42,9 +40,9 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
       </div>
       <div className="overflow-hidden py-3">
         <div className="flex w-max animate-scroll-left hover:[animation-play-state:paused]">
-          {[...skills, ...skills].map((SkillComponent, index) => (
-            <div key={index} className="px-5 sm:px-7 md:px-10 flex-shrink-0">
-              <SkillComponent className={iconClasses} />
+          {[...skills, ...skills].map((skill, index) => (
+            <div key={index} className="px-5 sm:px-7 md:px-10 flex-shrink-0 flex items-center justify-center">
+              <skill.component className={`${skill.size || iconClasses} ${skill.transform || ''}`} />
             </div>
           ))}
         </div>
