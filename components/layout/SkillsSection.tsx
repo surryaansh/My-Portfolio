@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { ReactSkillIcon } from '../icons/skills/ReactSkillIcon.tsx';
 import { NodeSkillIcon } from '../icons/skills/NodeSkillIcon.tsx';
 import { ExpressSkillIcon } from '../icons/skills/ExpressSkillIcon.tsx';
@@ -38,45 +38,67 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
   const iconClasses = "w-24 h-24 md:w-[7.5rem] md:h-[7.5rem]";
   
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
+  const velocity = useRef(0);
+  const lastMouseX = useRef(0);
+  const animationFrameId = useRef<number | null>(null);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
 
-    let animationFrameId: number;
-    const scrollSpeed = 1.35; // Approx 2% faster than original 40s duration
+    const scrollSpeed = 1.02; // Adjusted for new animation loop
+    const friction = 0.95; // Damping factor for inertia
 
-    const autoScroll = () => {
-      if (!isDragging && scroller) {
-        scroller.scrollLeft += scrollSpeed;
-        if (scroller.scrollLeft >= scroller.scrollWidth / 2) {
-          scroller.scrollLeft = 0;
+    const animate = () => {
+      if (!isDragging.current) {
+        if (Math.abs(velocity.current) > 0.1) {
+          // Apply inertia
+          scroller.scrollLeft += velocity.current;
+          velocity.current *= friction; // Apply friction
+        } else {
+          // Auto-scroll when idle
+          velocity.current = 0;
+          scroller.scrollLeft += scrollSpeed;
         }
       }
-      animationFrameId = requestAnimationFrame(autoScroll);
+      
+      // Handle seamless infinite loop
+      const scrollableWidth = scroller.scrollWidth / 2;
+      if (scroller.scrollLeft >= scrollableWidth) {
+        scroller.scrollLeft -= scrollableWidth;
+      } else if (scroller.scrollLeft < 0) {
+        scroller.scrollLeft += scrollableWidth;
+      }
+
+      animationFrameId.current = requestAnimationFrame(animate);
     };
 
-    animationFrameId = requestAnimationFrame(autoScroll);
+    animationFrameId.current = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
     };
-  }, [isDragging]);
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!scrollerRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX - scrollerRef.current.offsetLeft);
-    setScrollLeft(scrollerRef.current.scrollLeft);
+    isDragging.current = true;
+    velocity.current = 0; // Stop any ongoing animation
+    startX.current = e.pageX;
+    lastMouseX.current = e.pageX;
+    scrollLeftStart.current = scrollerRef.current.scrollLeft;
     scrollerRef.current.style.cursor = 'grabbing';
     scrollerRef.current.style.userSelect = 'none';
   };
 
-  const handleMouseLeaveOrUp = () => {
-    setIsDragging(false);
+  const handleMouseUpOrLeave = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
     if (scrollerRef.current) {
       scrollerRef.current.style.cursor = 'grab';
       scrollerRef.current.style.removeProperty('user-select');
@@ -84,13 +106,18 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging || !scrollerRef.current) return;
+    if (!isDragging.current || !scrollerRef.current) return;
     e.preventDefault();
-    const x = e.pageX - scrollerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll-fast factor
-    scrollerRef.current.scrollLeft = scrollLeft - walk;
+    const mouseX = e.pageX;
+    
+    // Update scroll position directly for responsiveness
+    const walk = mouseX - startX.current;
+    scrollerRef.current.scrollLeft = scrollLeftStart.current - walk;
+    
+    // Calculate velocity for inertia
+    velocity.current = mouseX - lastMouseX.current;
+    lastMouseX.current = mouseX;
   };
-
 
   return (
     <section className={`border-t ${borderClasses}`}>
@@ -102,8 +129,8 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
         ref={scrollerRef}
         className="overflow-x-auto no-scrollbar"
         onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeaveOrUp}
-        onMouseUp={handleMouseLeaveOrUp}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
         onMouseMove={handleMouseMove}
         style={{ cursor: 'grab' }}
       >
