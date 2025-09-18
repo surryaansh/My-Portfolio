@@ -18,9 +18,9 @@ export const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleDarkMode }) =>
         <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       </div>
       <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xl">
-        <a href="#" className="transition-opacity duration-200">PROJECTS</a>
-        <a href="#" className="transition-opacity duration-200">SKILLS</a>
-        <a href="#" className="transition-opacity duration-200">LET'S CONNECT</a>
+        <a href="#projects" className="transition-opacity duration-200">PROJECTS</a>
+        <a href="#skills" className="transition-opacity duration-200">SKILLS</a>
+        <a href="#contact" className="transition-opacity duration-200">LET'S CONNECT</a>
       </nav>
     </header>
   );

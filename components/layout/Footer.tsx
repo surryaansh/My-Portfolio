@@ -26,10 +26,10 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
       {/* Centered navigation section */}
       <div className="flex justify-center items-center pt-5 pb-11">
         <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xl">
-          <a href="#" className="transition-opacity duration-200">ABOUT ME</a>
-          <a href="#" className="transition-opacity duration-200">PROJECTS</a>
-          <a href="#" className="transition-opacity duration-200">SKILLS</a>
-          <a href="#" className="transition-opacity duration-200">CONTACT</a>
+          <a href="#about" className="transition-opacity duration-200">ABOUT ME</a>
+          <a href="#projects" className="transition-opacity duration-200">PROJECTS</a>
+          <a href="#skills" className="transition-opacity duration-200">SKILLS</a>
+          <a href="#contact" className="transition-opacity duration-200">CONTACT</a>
         </nav>
       </div>
       

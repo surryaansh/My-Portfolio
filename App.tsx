@@ -108,7 +108,7 @@ export default function App() {
       <Header isDarkMode={isDarkMode} toggleDarkMode={handleThemeToggle} />
 
       <main className="flex-1 flex flex-col">
-        <section className={`flex flex-col lg:flex-row flex-1 divide-y lg:divide-y-0 lg:divide-x ${isDarkMode ? 'divide-[#efeeee]' : 'divide-black'}`}>
+        <section id="about" className={`flex flex-col lg:flex-row flex-1 divide-y lg:divide-y-0 lg:divide-x ${isDarkMode ? 'divide-[#efeeee]' : 'divide-black'}`}>
           <LeftPanel isDarkMode={isDarkMode} />
           <RightPanel 
             ref={imageContainerRef}
@@ -117,7 +117,7 @@ export default function App() {
             relativeCursorPosition={relativeCursorPosition}
           />
         </section>
-        <section className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[60vh] divide-y lg:divide-y-0 ${isDarkMode ? 'border-[#efeeee] divide-[#efeeee]' : 'border-black divide-black'}`}>
+        <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[60vh] divide-y lg:divide-y-0 ${isDarkMode ? 'border-[#efeeee] divide-[#efeeee]' : 'border-black divide-black'}`}>
             <ProjectsLeftPanel isDarkMode={isDarkMode} />
             <ProjectsRightPanel isDarkMode={isDarkMode} />
         </section>
