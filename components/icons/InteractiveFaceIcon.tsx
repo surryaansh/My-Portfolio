@@ -105,16 +105,19 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const verticalOffset = y_factor * (y_factor < 0 ? 15 : 8);
     const frownAngle = y_factor > 0 ? y_factor * 10 : 0;
     const horizontalOffset = y_factor * -4;
+    
+    // New vertical offset based on horizontal cursor position for the "see-saw" effect
+    const horizontalVerticalOffset = x_factor * -8;
 
     leftEyebrowTransform = {
       angle: tilt + frownAngle,
       dx: horizontalOffset,
-      dy: verticalOffset,
+      dy: verticalOffset + horizontalVerticalOffset,
     };
     rightEyebrowTransform = {
       angle: tilt - frownAngle,
       dx: -horizontalOffset,
-      dy: verticalOffset,
+      dy: verticalOffset - horizontalVerticalOffset,
     };
   }
 
@@ -140,7 +143,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       <path d="M197 457.91C122.881 463.524 70.2463 480.789 69.4998 421.41C68.7534 362.031 166.773 307.424 238.5 315.91C297.973 322.946 356.5 355.91 347.5 428.41C341.052 480.354 271.118 452.296 197 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#leftEyeClip)">
         <g transform={`translate(${leftPupil.dx}, ${leftPupil.dy})`}>
-          <ellipse cx="213" cy="387" rx="55" ry="35" fill="currentColor"/>
+          <ellipse cx="213" cy="387" rx="55" ry="45" fill="currentColor"/>
         </g>
       </g>
       
@@ -152,7 +155,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
           rotate(${leftEyebrowTransform.angle}, ${leftEyebrowSVG_CX}, ${leftEyebrowSVG_CY})
         `}
       >
-        <g transform="translate(-60, 15) rotate(-25, 286, 238)">
+        <g transform="translate(-50, 25) rotate(-25, 286, 238)">
           <path d="M371.513 318.177L358.587 329.736C350.61 336.869 338.44 336.494 330.918 328.883L200.698 197.134C192.798 189.141 192.994 176.221 201.134 168.472L223.07 147.588C231.394 139.662 244.659 140.327 252.149 149.045L373.359 290.12C380.486 298.415 379.665 310.887 371.513 318.177Z" fill="currentColor" stroke="currentColor" strokeWidth="10.0412" transform="translate(24.26, -13.98)"></path>
         </g>
       </g>
@@ -161,7 +164,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       <path d="M650.904 457.91C576.786 463.524 524.151 480.789 523.404 421.41C522.658 362.031 620.677 307.424 692.404 315.91C751.877 322.946 810.404 355.91 801.404 428.41C794.956 480.354 725.023 452.296 650.904 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#rightEyeClip)">
         <g transform={`translate(${rightPupil.dx}, ${rightPupil.dy})`}>
-          <ellipse cx="667" cy="387" rx="55" ry="35" fill="currentColor"/>
+          <ellipse cx="667" cy="387" rx="55" ry="45" fill="currentColor"/>
         </g>
       </g>
       
@@ -173,7 +176,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
           rotate(${rightEyebrowTransform.angle}, ${rightEyebrowSVG_CX}, ${rightEyebrowSVG_CY})
         `}
       >
-        <g transform="translate(100, 0) rotate(30, 574, 239)">
+        <g transform="translate(90, 10) rotate(30, 574, 239)">
           <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10.0412" transform="translate(24.26, -13.98)"></path>
         </g>
       </g>

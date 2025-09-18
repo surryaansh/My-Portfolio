@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface ContactRightPanelProps {
@@ -17,13 +16,10 @@ export const ContactRightPanel: React.FC<ContactRightPanelProps> = ({ isDarkMode
         <span>06 CONTACT</span>
         <span>/06</span>
       </div>
-      <div className="flex-1 flex items-center justify-center">
-        <div className="flex items-center gap-8">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-full"></div>
-            <button className={buttonClasses}>
-                LET'S CONNECT
-            </button>
-        </div>
+      <div className="flex-1 flex items-center justify-center pb-16">
+        <button className={buttonClasses}>
+            LET'S CONNECT
+        </button>
       </div>
     </div>
   );
