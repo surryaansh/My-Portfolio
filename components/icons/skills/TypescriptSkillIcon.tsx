@@ -12,8 +12,6 @@ export const TypescriptSkillIcon: React.FC<IconProps> = ({ className }) => {
         xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 676 160"
         className="w-full h-auto"
+        fill="currentColor"
       >
-      </svg>
-    </div>
-  );
-};
+        <path d=
