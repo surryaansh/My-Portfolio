@@ -19,7 +19,12 @@ const skills = [
   { component: NodeSkillIcon, transform: 'transform -translate-y-1.5' },
   { component: ExpressSkillIcon, transform: 'transform translate-y-px', size: 'w-28 h-28 md:w-[8.5rem] md:h-[8.5rem]' },
   { component: MongoSkillIcon, transform: 'transform -translate-y-px', size: 'w-28 h-28 md:w-[8.5rem] md:h-[8.5rem]' },
-  { component: EthereumSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[10.5rem] md:h-[10.5rem]' },
+  {
+    component: EthereumSkillIcon,
+    transform: 'transform -translate-y-px',
+    size: 'w-40 h-40 md:w-[10.5rem] md:h-[10.5rem]',
+    margin: 'mr-8 sm:mr-10 md:mr-12' // Custom smaller margin
+  },
   { component: SoliditySkillIcon, transform: 'transform -translate-y-px' },
   { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
   { component: PolygonSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
@@ -34,7 +39,8 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
   }`;
   const borderClasses = isDarkMode ? 'border-[#efeeee]' : 'border-black';
   const iconClasses = "w-24 h-24 md:w-[7.5rem] md:h-[7.5rem]";
-  
+  const defaultMargin = 'mr-10 sm:mr-14 md:mr-20';
+
   const scrollerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -127,16 +133,16 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
       </div>
       <div
         ref={scrollerRef}
-        className="overflow-x-auto no-scrollbar"
+        className="overflow-x-auto no-scrollbar px-5 sm:px-7 md:px-10"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUpOrLeave}
         onMouseLeave={handleMouseUpOrLeave}
         onMouseMove={handleMouseMove}
         style={{ cursor: 'grab' }}
       >
-        <div className="flex w-max items-center gap-x-10 sm:gap-x-14 md:gap-x-20 px-5 sm:px-7 md:px-10">
+        <div className="flex w-max items-center">
           {[...skills, ...skills].map((skill, index) => (
-            <div key={index} className="flex-shrink-0 flex items-center justify-center">
+            <div key={index} className={`flex-shrink-0 flex items-center justify-center ${skill.margin || defaultMargin}`}>
               <skill.component className={`${skill.size || iconClasses} ${skill.transform || ''}`} />
             </div>
           ))}
