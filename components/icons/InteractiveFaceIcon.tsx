@@ -32,8 +32,8 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
 
         setCenters({
           face: { x: faceRect.left + faceRect.width / 2, y: faceRect.top + faceRect.height / 2, width: faceRect.width, height: faceRect.height },
-          leftEye: getScreenCoords(208, 386),
-          rightEye: getScreenCoords(662, 386),
+          leftEye: getScreenCoords(208, 393),
+          rightEye: getScreenCoords(662, 393),
         });
       }
     };
@@ -61,8 +61,15 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const dx = cursorPosition.x - eyeCenter.x;
     const dy = cursorPosition.y - eyeCenter.y;
     const angle = Math.atan2(dy, dx);
-    // Increased travel distance and sensitivity for more free movement
-    const distance = Math.min(40, Math.sqrt(dx * dx + dy * dy) * 0.15);
+
+    // By centering the pupils vertically and using a max travel distance
+    // that fits within the eye boundaries, the pupils can now move freely
+    // without getting clipped at the top. Increased sensitivity for a more
+    // responsive feel.
+    const maxTravel = 35;
+    const sensitivity = 0.2;
+
+    const distance = Math.min(maxTravel, Math.sqrt(dx * dx + dy * dy) * sensitivity);
     return {
       dx: Math.cos(angle) * distance,
       dy: Math.sin(angle) * distance,
@@ -127,8 +134,8 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       <path d="M197 457.91C122.881 463.524 70.2463 480.789 69.4998 421.41C68.7534 362.031 166.773 307.424 238.5 315.91C297.973 322.946 356.5 355.91 347.5 428.41C341.052 480.354 271.118 452.296 197 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#leftEyeClip)">
         <g transform={`translate(${leftPupil.dx}, ${leftPupil.dy})`}>
-          <ellipse cx="208" cy="386" rx="65" ry="50" fill="currentColor"/>
-          <ellipse cx="230" cy="366" rx="15" ry="10" fill={pupilHighlightColor} opacity="0.8" />
+          <ellipse cx="208" cy="393" rx="65" ry="50" fill="currentColor"/>
+          <ellipse cx="230" cy="373" rx="15" ry="10" fill={pupilHighlightColor} opacity="0.8" />
         </g>
       </g>
       
@@ -149,8 +156,8 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       <path d="M650.904 457.91C576.786 463.524 524.151 480.789 523.404 421.41C522.658 362.031 620.677 307.424 692.404 315.91C751.877 322.946 810.404 355.91 801.404 428.41C794.956 480.354 725.023 452.296 650.904 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#rightEyeClip)">
         <g transform={`translate(${rightPupil.dx}, ${rightPupil.dy})`}>
-          <ellipse cx="662" cy="386" rx="65" ry="50" fill="currentColor"/>
-          <ellipse cx="684" cy="366" rx="15" ry="10" fill={pupilHighlightColor} opacity="0.8" />
+          <ellipse cx="662" cy="393" rx="65" ry="50" fill="currentColor"/>
+          <ellipse cx="684" cy="373" rx="15" ry="10" fill={pupilHighlightColor} opacity="0.8" />
         </g>
       </g>
       
