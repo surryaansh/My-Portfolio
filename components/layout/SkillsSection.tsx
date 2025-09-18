@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ReactSkillIcon } from '../icons/skills/ReactSkillIcon.tsx';
 import { NodeSkillIcon } from '../icons/skills/NodeSkillIcon.tsx';
@@ -15,11 +16,11 @@ interface SkillsSectionProps {
 const skills = [
   { component: ReactSkillIcon },
   { component: NodeSkillIcon, transform: 'transform -translate-y-1.5' },
-  { component: ExpressSkillIcon, transform: 'transform translate-y-1.5' },
+  { component: ExpressSkillIcon, transform: 'transform translate-y-1' },
   { component: MongoSkillIcon },
-  { component: EthereumSkillIcon, size: 'w-28 h-28 md:w-[8rem] md:h-[8rem]' },
+  { component: EthereumSkillIcon, size: 'w-32 h-32 md:w-[9rem] md:h-[9rem]' },
   { component: SoliditySkillIcon },
-  { component: TypescriptSkillIcon, size: 'w-28 h-28 md:w-[8rem] md:h-[8rem]' },
+  { component: TypescriptSkillIcon, size: 'w-32 h-32 md:w-[9rem] md:h-[9rem]' },
   { component: PythonSkillIcon },
 ];
 
