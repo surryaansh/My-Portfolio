@@ -21,16 +21,13 @@
       a, button {
         cursor: none !important; /* Use !important to override defaults */
       }
-      @keyframes scroll-left {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(-50%);
-        }
+      /* Utility to hide scrollbars */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
       }
-      .animate-scroll-left {
-        animation: scroll-left 40s linear infinite;
+      .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
       }
     </style>
   <script type="importmap">
