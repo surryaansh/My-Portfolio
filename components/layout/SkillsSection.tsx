@@ -16,17 +16,16 @@ interface SkillsSectionProps {
 
 const skills: Array<{
   component: React.FC<{ className?: string }>;
-  size?: string;
 }> = [
   { component: ReactSkillIcon },
   { component: NodeSkillIcon },
-  { component: ExpressSkillIcon, size: 'w-28 h-28 md:w-[8.5rem] md:h-[8.5rem]' },
-  { component: MongoSkillIcon, size: 'w-28 h-28 md:w-[8.5rem] md:h-[8.5rem]' },
-  { component: EthereumSkillIcon, size: 'w-40 h-40 md:w-[10.5rem] md:h-[10.5rem]' },
+  { component: ExpressSkillIcon },
+  { component: MongoSkillIcon },
+  { component: EthereumSkillIcon },
   { component: SoliditySkillIcon },
-  { component: MetamaskSkillIcon, size: 'w-36 md:w-[9rem]' },
-  { component: PolygonSkillIcon, size: 'w-36 md:w-[9rem]' },
-  { component: TypescriptSkillIcon, size: 'w-40 h-40 md:w-[11rem] md:h-[11rem]' },
+  { component: MetamaskSkillIcon },
+  { component: PolygonSkillIcon },
+  { component: TypescriptSkillIcon },
   { component: PythonSkillIcon },
 ];
 
@@ -37,7 +36,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
       : 'text-gray-600'
   }`;
   const borderClasses = isDarkMode ? 'border-[#efeeee]' : 'border-black';
-  const iconClasses = "w-24 h-24 md:w-[7.5rem] md:h-[7.5rem]";
+  const iconClasses = "h-16 md:h-20 w-auto";
 
   return (
     <section className={`border-t ${borderClasses}`}>
@@ -45,11 +44,11 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
         <span>04 SKILLS</span>
         <span>/04</span>
       </div>
-      <div className="overflow-hidden flex items-center">
+      <div className="overflow-hidden flex items-center py-4">
         <div className="flex w-max animate-scroll-left hover:[animation-play-state:paused]">
           {[...skills, ...skills].map((skill, index) => (
             <div key={index} className="px-5 sm:px-7 md:px-10 flex-shrink-0 flex items-center justify-center">
-              <skill.component className={`${skill.size || iconClasses}`} />
+              <skill.component className={iconClasses} />
             </div>
           ))}
         </div>
