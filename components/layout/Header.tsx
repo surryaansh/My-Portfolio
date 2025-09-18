@@ -1,6 +1,7 @@
 import React from 'react';
 import { LightningIcon } from '../icons/LightningIcon.tsx';
 import { DarkModeToggle } from '../DarkModeToggle.tsx';
+import { useSmoothScroll } from '../../hooks/useSmoothScroll.ts';
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -8,6 +9,8 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleDarkMode }) => {
+  const { handleScroll } = useSmoothScroll();
+
   return (
     <header className={`flex flex-col md:flex-row justify-between items-center py-4 border-b ${isDarkMode ? 'border-[#efeeee]' : 'border-black'}`}>
       <div className="flex items-center gap-4 mb-4 md:mb-0">
@@ -18,9 +21,9 @@ export const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleDarkMode }) =>
         <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
       </div>
       <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xl">
-        <a href="#projects" className="transition-opacity duration-200">PROJECTS</a>
-        <a href="#skills" className="transition-opacity duration-200">SKILLS</a>
-        <a href="#contact" className="transition-opacity duration-200">LET'S CONNECT</a>
+        <a href="#projects" onClick={handleScroll} className="transition-opacity duration-200">PROJECTS</a>
+        <a href="#skills" onClick={handleScroll} className="transition-opacity duration-200">SKILLS</a>
+        <a href="#contact" onClick={handleScroll} className="transition-opacity duration-200">LET'S CONNECT</a>
       </nav>
     </header>
   );

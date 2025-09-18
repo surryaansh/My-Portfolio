@@ -17,9 +17,9 @@ export const ContactRightPanel: React.FC<ContactRightPanelProps> = ({ isDarkMode
         <span>/06</span>
       </div>
       <div className="flex-1 flex items-center justify-center pb-16">
-        <button className={buttonClasses}>
+        <a href="mailto:suryanshs1804@gmail.com" className={buttonClasses}>
             LET'S CONNECT
-        </button>
+        </a>
       </div>
     </div>
   );
