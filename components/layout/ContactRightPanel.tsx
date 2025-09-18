@@ -9,7 +9,7 @@ interface ContactRightPanelProps {
 export const ContactRightPanel = forwardRef<HTMLDivElement, ContactRightPanelProps>(
   ({ isDarkMode, relativeCursorPosition, isHoveringLink }, ref) => {
     const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
-    const buttonClasses = `px-8 py-4 md:px-10 md:py-5 rounded-full text-base md:text-lg font-bold transition-colors duration-300 ease-in-out hover:bg-[#FF4500] ${
+    const buttonClasses = `transform -translate-y-1 px-8 py-3 md:px-10 md:py-4 rounded-full text-base md:text-lg font-bold transition-colors duration-300 ease-in-out hover:bg-[#FF4500] ${
       isDarkMode ? 'bg-[#efeeee] text-black' : 'bg-black text-[#efeeee]'
     }`;
 
@@ -19,7 +19,7 @@ export const ContactRightPanel = forwardRef<HTMLDivElement, ContactRightPanelPro
           <span>06 CONTACT</span>
           <span>/06</span>
         </div>
-        <div ref={ref} className="flex-1 relative overflow-hidden px-2 pt-0 pb-8 lg:px-0">
+        <div ref={ref} className="flex-1 relative overflow-hidden px-2 pt-0 pb-6 lg:px-0">
           {/* This is the solid cursor, only visible when inside this container to prevent color inversion */}
           <div
             className="hidden lg:block"
