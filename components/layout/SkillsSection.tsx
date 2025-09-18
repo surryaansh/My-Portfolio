@@ -9,7 +9,6 @@ import { SoliditySkillIcon } from '../icons/skills/SoliditySkillIcon.tsx';
 import { MetamaskSkillIcon } from '../icons/skills/MetamaskSkillIcon.tsx';
 import { PolygonSkillIcon } from '../icons/skills/PolygonSkillIcon.tsx';
 import { TypescriptSkillIcon } from '../icons/skills/TypescriptSkillIcon.tsx';
-import { PythonSkillIcon } from '../icons/skills/PythonSkillIcon.tsx';
 
 interface SkillsSectionProps {
   isDarkMode: boolean;
@@ -25,7 +24,6 @@ const skills = [
   { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
   { component: PolygonSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
   { component: TypescriptSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[11rem] md:h-[11rem]' },
-  { component: PythonSkillIcon },
 ];
 
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
@@ -136,9 +134,9 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
         onMouseMove={handleMouseMove}
         style={{ cursor: 'grab' }}
       >
-        <div className="flex w-max">
+        <div className="flex w-max items-center gap-x-10 sm:gap-x-14 md:gap-x-20 px-5 sm:px-7 md:px-10">
           {[...skills, ...skills].map((skill, index) => (
-            <div key={index} className="px-5 sm:px-7 md:px-10 flex-shrink-0 flex items-center justify-center">
+            <div key={index} className="flex-shrink-0 flex items-center justify-center">
               <skill.component className={`${skill.size || iconClasses} ${skill.transform || ''}`} />
             </div>
           ))}
