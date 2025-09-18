@@ -1,139 +1,166 @@
 import React, { useRef, useState, useEffect } from 'react';
 
 interface InteractiveFaceIconProps {
+  /** The global mouse position provided by the parent component. */
   cursorPosition: { x: number; y: number };
   isDarkMode: boolean;
 }
 
+/**
+ * An interactive SVG face icon where the eyes and eyebrows follow the cursor's movement,
+ * creating an expressive and engaging UI element.
+ */
 export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursorPosition, isDarkMode }) => {
   const faceRef = useRef<SVGSVGElement>(null);
-  const [centers, setCenters] = useState({
+
+  // State to store the calculated positions and scale of the SVG elements on the screen.
+  const [elementPositions, setElementPositions] = useState({
     face: { x: 0, y: 0, width: 0, height: 0 },
     leftEye: { x: 0, y: 0 },
     rightEye: { x: 0, y: 0 },
     scale: { x: 1, y: 1 },
   });
 
+  // Effect to calculate and update the screen coordinates of the face and eyes.
+  // This runs on mount and recalculates on window resize to handle responsiveness.
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
-    const calculateCenters = () => {
-      if (faceRef.current) {
-        const faceRect = faceRef.current.getBoundingClientRect();
-        if (faceRect.width === 0) return; // Avoid calculating if not rendered
 
-        const viewBox = { x: 67, y: 105, width: 745, height: 364 };
-        const scaleX = faceRect.width / viewBox.width;
-        const scaleY = faceRect.height / viewBox.height;
+    const calculatePositions = () => {
+      if (!faceRef.current) return;
+      
+      const faceRect = faceRef.current.getBoundingClientRect();
+      // If the component isn't rendered yet, the width will be 0. We avoid calculation in this case.
+      if (faceRect.width === 0) return; 
 
-        const getScreenCoords = (svgX: number, svgY: number) => ({
-          x: faceRect.left + (svgX - viewBox.x) * scaleX,
-          y: faceRect.top + (svgY - viewBox.y) * scaleY,
-        });
+      // The original SVG viewBox dimensions. Used to calculate scaling factor.
+      const viewBox = { x: 67, y: 105, width: 745, height: 364 };
+      const scaleX = faceRect.width / viewBox.width;
+      const scaleY = faceRect.height / viewBox.height;
 
-        setCenters({
-          face: { x: faceRect.left + faceRect.width / 2, y: faceRect.top + faceRect.height / 2, width: faceRect.width, height: faceRect.height },
-          leftEye: getScreenCoords(213, 395),
-          rightEye: getScreenCoords(667, 395),
-          scale: { x: scaleX, y: scaleY },
-        });
-      }
+      // Helper function to convert internal SVG coordinates to absolute screen coordinates.
+      const getScreenCoords = (svgX: number, svgY: number) => ({
+        x: faceRect.left + (svgX - viewBox.x) * scaleX,
+        y: faceRect.top + (svgY - viewBox.y) * scaleY,
+      });
+
+      setElementPositions({
+        face: { 
+          x: faceRect.left + faceRect.width / 2, 
+          y: faceRect.top + faceRect.height / 2, 
+          width: faceRect.width, 
+          height: faceRect.height 
+        },
+        // These are the original coordinates of the eye centers within the SVG viewBox.
+        leftEye: getScreenCoords(213, 395),
+        rightEye: getScreenCoords(667, 395),
+        scale: { x: scaleX, y: scaleY },
+      });
     };
     
+    // Debounce the resize handler to avoid performance issues.
     const handleResize = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(calculateCenters, 100);
+      timeoutId = setTimeout(calculatePositions, 100);
     };
 
-    calculateCenters();
+    calculatePositions();
+    // Also run a delayed calculation to catch layout shifts after initial render.
+    const initialCalculationTimer = setTimeout(calculatePositions, 500);
+
     window.addEventListener('resize', handleResize);
     
-    const timer = setTimeout(calculateCenters, 500);
-
     return () => {
       clearTimeout(timeoutId);
-      clearTimeout(timer);
+      clearTimeout(initialCalculationTimer);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
 
+  /**
+   * Calculates the pupil's transform (dx, dy) based on the cursor position relative to an eye's center.
+   * @param eyeCenter - The absolute screen coordinates of the eye's center.
+   * @returns The calculated dx and dy translation for the pupil in SVG units.
+   */
   const getPupilTransform = (eyeCenter: { x: number; y: number }) => {
-    if (!eyeCenter.x || !eyeCenter.y || centers.scale.x === 0 || centers.scale.y === 0) {
+    const { scale } = elementPositions;
+    if (!eyeCenter.x || !eyeCenter.y || scale.x === 0 || scale.y === 0) {
       return { dx: 0, dy: 0 };
     }
     
+    // Maximum travel distance for the pupil in SVG units.
     const maxTravelX = 60;
     const maxTravelY = 30;
-    const sensitivity = 0.4;
+    const sensitivity = 0.4; // How strongly the pupil reacts to cursor movement.
 
-    // Calculate displacement in screen pixels
+    // 1. Calculate displacement in screen pixels.
     const dx_pixels = (cursorPosition.x - eyeCenter.x) * sensitivity;
     const dy_pixels = (cursorPosition.y - eyeCenter.y) * sensitivity;
     
-    // Convert pixel displacement to SVG coordinate units
-    let dx = dx_pixels / centers.scale.x;
-    let dy = dy_pixels / centers.scale.y;
+    // 2. Convert pixel displacement to SVG coordinate units using the calculated scale.
+    let dx = dx_pixels / scale.x;
+    let dy = dy_pixels / scale.y;
 
-    // Use an elliptical constraint to ensure natural movement
+    // 3. Constrain the movement to an elliptical path that matches the eye shape.
     const ellipseRatio = (dx / maxTravelX) ** 2 + (dy / maxTravelY) ** 2;
 
     if (ellipseRatio > 1) {
-      const scale = 1 / Math.sqrt(ellipseRatio);
-      dx *= scale;
-      dy *= scale;
+      const scaleFactor = 1 / Math.sqrt(ellipseRatio);
+      dx *= scaleFactor;
+      dy *= scaleFactor;
     }
     
     return { dx, dy };
   };
 
-  const leftPupil = getPupilTransform(centers.leftEye);
-  const rightPupil = getPupilTransform(centers.rightEye);
-
-  let leftEyebrowTransform = { angle: 0, dx: 0, dy: 0 };
-  let rightEyebrowTransform = { angle: 0, dx: 0, dy: 0 };
-
-  if (centers.face.width > 0 && centers.face.x > 0) {
-    const W = centers.face.width;
-    const H = centers.face.height;
-
-    const dx = cursorPosition.x - centers.face.x;
-    const dy = cursorPosition.y - centers.face.y;
-    
-    const x_factor = Math.max(-1, Math.min(1, dx / (W / 2)));
-    const y_factor = Math.max(-1, Math.min(1, dy / (H / 1.5)));
-
-    const tilt = x_factor * 4;
-    const verticalOffset = y_factor * (y_factor < 0 ? 15 : 8);
-    const frownAngle = y_factor > 0 ? y_factor * 10 : 0;
-    
-    const horizontalVerticalOffset = x_factor * -15;
-
-    // New horizontal "squeeze" logic
-    const maxSqueeze = 25;
-    let leftSqueeze = 0;
-    let rightSqueeze = 0;
-
-    if (x_factor < 0) { // Cursor is on the left
-        // Right eyebrow moves left (negative dx)
-        rightSqueeze = x_factor * maxSqueeze; 
-    } else { // Cursor is on the right
-        // Left eyebrow moves right (positive dx)
-        leftSqueeze = x_factor * maxSqueeze;
+  /**
+   * Calculates the eyebrow transforms (rotation, translation) based on cursor position relative to the face.
+   * @returns An object containing the transform properties for both left and right eyebrows.
+   */
+  const getEyebrowTransforms = () => {
+    const { face } = elementPositions;
+    if (face.width === 0 || face.x === 0) {
+      return { left: { angle: 0, dx: 0, dy: 0 }, right: { angle: 0, dx: 0, dy: 0 } };
     }
 
-    leftEyebrowTransform = {
+    const dx = cursorPosition.x - face.x;
+    const dy = cursorPosition.y - face.y;
+    
+    // Normalize cursor position from -1 to 1 relative to the face dimensions.
+    const xFactor = Math.max(-1, Math.min(1, dx / (face.width / 2)));
+    const yFactor = Math.max(-1, Math.min(1, dy / (face.height / 1.5)));
+
+    // --- Define Animation Components ---
+    const tilt = xFactor * 4; 
+    const verticalOffset = yFactor * (yFactor < 0 ? 15 : 8); 
+    const frownAngle = yFactor > 0 ? yFactor * 10 : 0; 
+    const seeSawOffset = xFactor * -15; 
+    const maxSqueeze = 25;
+    const leftSqueeze = xFactor > 0 ? xFactor * maxSqueeze : 0;
+    const rightSqueeze = xFactor < 0 ? xFactor * maxSqueeze : 0;
+
+    // --- Combine into final transforms ---
+    const leftEyebrowTransform = {
       angle: tilt + frownAngle,
       dx: leftSqueeze,
-      dy: verticalOffset + horizontalVerticalOffset,
+      dy: verticalOffset + seeSawOffset,
     };
-    rightEyebrowTransform = {
+    const rightEyebrowTransform = {
       angle: tilt - frownAngle,
       dx: rightSqueeze,
-      dy: verticalOffset - horizontalVerticalOffset,
+      dy: verticalOffset - seeSawOffset,
     };
+    
+    return { left: leftEyebrowTransform, right: rightEyebrowTransform };
   }
+
+  const leftPupil = getPupilTransform(elementPositions.leftEye);
+  const rightPupil = getPupilTransform(elementPositions.rightEye);
+  const { left: leftEyebrowTransform, right: rightEyebrowTransform } = getEyebrowTransforms();
 
   const eyeWhiteColor = isDarkMode ? '#000000' : '#EEEEEE';
 
+  // SVG coordinates for eyebrow rotation centers.
   const leftEyebrowSVG_CX = 286;
   const leftEyebrowSVG_CY = 238;
   const rightEyebrowSVG_CX = 574;

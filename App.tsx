@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, memo } from 'react';
 import { Header } from './components/layout/Header.tsx';
 import { LeftPanel } from './components/layout/LeftPanel.tsx';
 import { RightPanel } from './components/layout/RightPanel.tsx';
@@ -9,51 +8,35 @@ import { ProjectsRightPanel } from './components/layout/ProjectsRightPanel.tsx';
 import { SkillsSection } from './components/layout/SkillsSection.tsx';
 import { ContactSection } from './components/layout/ContactSection.tsx';
 import { Footer } from './components/layout/Footer.tsx';
+import { useMousePosition } from './hooks/useMousePosition.ts';
+import './types.d.ts'; // Import for global type declarations
 
-// The ViewTransition API is not yet in standard TS libs, so we declare it here.
-declare global {
-  interface Document {
-    startViewTransition?(callback: () => void): ViewTransition;
-  }
+// Memoize components that do not need to re-render on every state change (e.g., cursor move).
+const MemoizedHeader = memo(Header);
+const MemoizedLeftPanel = memo(LeftPanel);
+const MemoizedProjectsLeftPanel = memo(ProjectsLeftPanel);
+const MemoizedProjectsRightPanel = memo(ProjectsRightPanel);
+const MemoizedSkillsSection = memo(SkillsSection);
+const MemoizedFooter = memo(Footer);
 
-  interface ViewTransition {
-    ready: Promise<void>;
-  }
-}
-
+/**
+ * The main application component.
+ * Manages global state such as theme, cursor position, and view transitions.
+ */
 export default function App() {
-  const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 });
-  const [relativeCursorPosition, setRelativeCursorPosition] = useState({ x: -100, y: -100 });
-  const [isHoveringLink, setIsHoveringLink] = useState(false);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
+  const { position: cursorPosition, relativePosition: relativeCursorPosition, isHoveringLink } = useMousePosition(imageContainerRef);
+
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setCursorPosition({ x: event.clientX, y: event.clientY });
-      
-      const target = event.target as HTMLElement;
-      setIsHoveringLink(!!target.closest('a, button'));
-
-      if (imageContainerRef.current) {
-        const rect = imageContainerRef.current.getBoundingClientRect();
-        setRelativeCursorPosition({
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-        });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
+  /**
+   * Handles the theme toggle with a smooth circular reveal animation
+   * using the View Transition API.
+   * @param event - The mouse event from the button click.
+   */
   const handleThemeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Fallback for browsers that do not support the View Transition API.
     if (!document.startViewTransition) {
       setIsDarkMode(!isDarkMode);
       return;
@@ -87,15 +70,16 @@ export default function App() {
           pseudoElement: '::view-transition-new(root)',
         }
       );
-      animation.finished.then(() => {
-        setIsTransitioning(false);
-      });
+      animation.onfinish = () => setIsTransitioning(false);
     });
   };
 
+  const themeClasses = isDarkMode ? 'bg-black text-[#efeeee]' : 'bg-[#efeeee] text-black';
+  const borderClasses = isDarkMode ? 'divide-[#efeeee] border-[#efeeee]' : 'divide-black border-black';
+  
   return (
     <div 
-      className={`min-h-screen flex flex-col font-sans px-4 md:px-16 pt-8 ${isDarkMode ? 'bg-black text-[#efeeee]' : 'bg-[#efeeee] text-black'}`}
+      className={`min-h-screen flex flex-col font-sans px-4 md:px-16 pt-8 ${themeClasses}`}
       style={{ cursor: isTransitioning ? 'auto' : 'none' }}
     >
       <BlendedCursor 
@@ -104,12 +88,11 @@ export default function App() {
         isTransitioning={isTransitioning}
       />
       
-      {/* FIX: Pass handleThemeToggle to the toggleDarkMode prop. The original code was passing an undefined variable 'toggleDarkMode'. */}
-      <Header isDarkMode={isDarkMode} toggleDarkMode={handleThemeToggle} />
+      <MemoizedHeader isDarkMode={isDarkMode} toggleDarkMode={handleThemeToggle} />
 
       <main className="flex-1 flex flex-col">
-        <section id="about" className={`flex flex-col lg:flex-row flex-1 divide-y lg:divide-y-0 lg:divide-x ${isDarkMode ? 'divide-[#efeeee]' : 'divide-black'}`}>
-          <LeftPanel isDarkMode={isDarkMode} />
+        <section id="about" className={`flex flex-col lg:flex-row flex-1 divide-y lg:divide-y-0 lg:divide-x ${borderClasses}`}>
+          <MemoizedLeftPanel isDarkMode={isDarkMode} />
           <RightPanel 
             ref={imageContainerRef}
             isDarkMode={isDarkMode} 
@@ -117,13 +100,17 @@ export default function App() {
             relativeCursorPosition={relativeCursorPosition}
           />
         </section>
-        <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[60vh] divide-y lg:divide-y-0 ${isDarkMode ? 'border-[#efeeee] divide-[#efeeee]' : 'border-black divide-black'}`}>
-            <ProjectsLeftPanel isDarkMode={isDarkMode} />
-            <ProjectsRightPanel isDarkMode={isDarkMode} />
+
+        <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[60vh] divide-y lg:divide-y-0 ${borderClasses}`}>
+            <MemoizedProjectsLeftPanel isDarkMode={isDarkMode} />
+            <MemoizedProjectsRightPanel isDarkMode={isDarkMode} />
         </section>
-        <SkillsSection isDarkMode={isDarkMode} />
+        
+        <MemoizedSkillsSection isDarkMode={isDarkMode} />
+
         <ContactSection isDarkMode={isDarkMode} cursorPosition={cursorPosition} />
-        <Footer isDarkMode={isDarkMode} />
+        
+        <MemoizedFooter isDarkMode={isDarkMode} />
       </main>
     </div>
   );

@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
+import { PROJECTS } from '../../constants/projects.ts';
 
 interface ProjectsLeftPanelProps {
   isDarkMode: boolean;
 }
 
-const projects = [
-  "BARKCHAIN",
-  "MYDASH",
-  "SURU GPT",
-];
-
+/**
+ * Displays a selectable list of projects.
+ */
 export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode }) => {
-  const [selectedProject, setSelectedProject] = useState<string>(projects[0]);
+  const [selectedProject, setSelectedProject] = useState<string>(PROJECTS[0]);
   const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
 
   return (
@@ -21,9 +19,9 @@ export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode
         <span>/02</span>
       </div>
       <div className="flex-1 flex flex-col pt-3">
-        <nav>
-          <ul>
-            {projects.map((project) => {
+        <nav aria-label="Project selection">
+          <ul role="list">
+            {PROJECTS.map((project) => {
               const isActive = project === selectedProject;
 
               return (
@@ -36,6 +34,7 @@ export const ProjectsLeftPanel: React.FC<ProjectsLeftPanelProps> = ({ isDarkMode
                         : 'text-2xl font-normal tracking-tight'
                       }`
                     }
+                    aria-pressed={isActive}
                   >
                     {project}
                   </button>

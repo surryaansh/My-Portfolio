@@ -20,11 +20,15 @@
         -ms-user-select: none;     /* IE10+/Edge */
         user-select: none;         /* Standard */
       }
-      /* Ensure custom cursor is used everywhere */
+      /* 
+        This rule ensures the custom cursor is used consistently. 
+        !important is used here deliberately to override default browser styles 
+        and any potential specificity conflicts on interactive elements.
+      */
       a, button {
-        cursor: none !important; /* Use !important to override defaults */
+        cursor: none !important;
       }
-      /* Utility to hide scrollbars */
+      /* Utility to hide scrollbars for a cleaner look */
       .no-scrollbar::-webkit-scrollbar {
         display: none;
       }
