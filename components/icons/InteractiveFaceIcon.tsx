@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 
 interface InteractiveFaceIconProps {
@@ -11,12 +12,10 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     face: { x: 0, y: 0, width: 0 },
     leftEye: { x: 0, y: 0 },
     rightEye: { x: 0, y: 0 },
-    leftEyebrow: { x: 0, y: 0 },
-    rightEyebrow: { x: 0, y: 0 },
+    eyebrows: { y: 0 },
   });
 
   useEffect(() => {
-    // Debounced calculation of element positions for responsiveness
     let timeoutId: ReturnType<typeof setTimeout>;
     const calculateCenters = () => {
       if (faceRef.current) {
@@ -34,8 +33,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
           face: { x: faceRect.left + faceRect.width / 2, y: faceRect.top + faceRect.height / 2, width: faceRect.width },
           leftEye: getScreenCoords(208, 386),
           rightEye: getScreenCoords(662, 386),
-          leftEyebrow: getScreenCoords(286, 238),
-          rightEyebrow: getScreenCoords(574, 239),
+          eyebrows: { y: getScreenCoords(0, 238).y },
         });
       }
     };
@@ -48,7 +46,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     calculateCenters();
     window.addEventListener('resize', handleResize);
     
-    // Recalculate after initial render/animations settle
     const timer = setTimeout(calculateCenters, 500);
 
     return () => {
@@ -63,25 +60,22 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const dx = cursorPosition.x - eyeCenter.x;
     const dy = cursorPosition.y - eyeCenter.y;
     const angle = Math.atan2(dy, dx);
-    // Increased sensitivity (0.2) and travel distance (30) for more noticeable movement.
-    const distance = Math.min(30, Math.sqrt(dx * dx + dy * dy) * 0.2);
+    const distance = Math.min(35, Math.sqrt(dx * dx + dy * dy) * 0.22);
     return {
       dx: Math.cos(angle) * distance,
       dy: Math.sin(angle) * distance,
     };
   };
 
-  const getEyebrowTransform = (eyebrowCenterY: number) => {
-    if (!centers.face.x || !eyebrowCenterY || !centers.face.width) return { angle: 0, dy: 0 };
+  const getEyebrowTransform = () => {
+    if (!centers.face.x || !centers.eyebrows.y || !centers.face.width) return { angle: 0, dy: 0 };
 
-    // Vertical movement (raise/lower) based on cursor distance from eyebrow's height
-    const dy_from_eyebrow = cursorPosition.y - eyebrowCenterY;
-    const verticalOffset = -Math.max(-15, Math.min(15, dy_from_eyebrow * 0.1));
+    const dy_from_eyebrow = cursorPosition.y - centers.eyebrows.y;
+    const verticalOffset = Math.max(-25, Math.min(25, dy_from_eyebrow * 0.15));
 
-    // Horizontal rotation (tilt) based on cursor's horizontal position relative to the face's center
     const dx_from_face_center = cursorPosition.x - centers.face.x;
-    const maxRotation = 20; // Max tilt in degrees
-    const rotationRange = centers.face.width > 0 ? centers.face.width / 2 : window.innerWidth / 4; // Use half face width for full tilt range
+    const maxRotation = 25;
+    const rotationRange = centers.face.width > 0 ? centers.face.width / 2 : window.innerWidth / 4;
     const rotationAngle = Math.max(-maxRotation, Math.min(maxRotation, (dx_from_face_center / rotationRange) * maxRotation));
 
     return { angle: rotationAngle, dy: verticalOffset };
@@ -89,15 +83,17 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
 
   const leftPupil = getPupilTransform(centers.leftEye);
   const rightPupil = getPupilTransform(centers.rightEye);
-  const eyebrowTransform = getEyebrowTransform(centers.leftEyebrow.y); // Both eyebrows share the same transform logic
+  const eyebrowTransform = getEyebrowTransform();
+
+  const leftEyelidTranslateY = Math.max(0, leftPupil.dy * 0.7);
+  const rightEyelidTranslateY = Math.max(0, rightPupil.dy * 0.7);
 
   const eyeWhiteColor = isDarkMode ? '#000000' : '#EEEEEE';
 
-  // SVG coordinates for rotation centers of eyebrows
-  const leftEyebrowSVG_CX = 286;
-  const leftEyebrowSVG_CY = 238;
-  const rightEyebrowSVG_CX = 574;
-  const rightEyebrowSVG_CY = 239;
+  const leftEyebrowSVG_CX = 280;
+  const leftEyebrowSVG_CY = 240;
+  const rightEyebrowSVG_CX = 580;
+  const rightEyebrowSVG_CY = 240;
 
   return (
     <svg ref={faceRef} fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="67 105 745 364">
@@ -115,38 +111,40 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       <g clipPath="url(#leftEyeClip)">
         <path d="M245.394 419.322C225.669 415.393 191.257 402.188 193.279 374.296C195.738 340.37 235.38 335.212 269.295 341.696C297.416 347.073 334.775 353.691 324.511 392.091C316.323 422.725 265.119 423.251 245.394 419.322Z" fill="currentColor" stroke="currentColor" strokeWidth="21.7077" transform={`translate(${leftPupil.dx - 3.739}, ${leftPupil.dy - 5.979})`}></path>
       </g>
+      <path d="M 69,421 C 120,330, 290,330, 347,428" fill={eyeWhiteColor} stroke="none" style={{ transition: 'transform 0.1s ease-out' }} transform={`translate(0, ${leftEyelidTranslateY})`}></path>
       
       {/* Left Eyebrow */}
-      <g 
+      <path 
+        d="M 180,270 C 220,210, 340,210, 380,270" 
+        stroke="currentColor" 
+        strokeWidth="12" 
+        strokeLinecap="round" 
         style={{ transition: 'transform 0.1s ease-out' }} 
         transform={`
           translate(0, ${eyebrowTransform.dy}) 
           rotate(${eyebrowTransform.angle}, ${leftEyebrowSVG_CX}, ${leftEyebrowSVG_CY})
         `}
-      >
-        <g transform="translate(-72, -9) rotate(-25, 286, 238)">
-          <path d="M371.513 318.177L358.587 329.736C350.61 336.869 338.44 336.494 330.918 328.883L200.698 197.134C192.798 189.141 192.994 176.221 201.134 168.472L223.07 147.588C231.394 139.662 244.659 140.327 252.149 149.045L373.359 290.12C380.486 298.415 379.665 310.887 371.513 318.177Z" fill="currentColor" stroke="currentColor" strokeWidth="10.0412" transform="translate(24.26, -13.98)"></path>
-        </g>
-      </g>
+      />
 
       {/* Right Eye */}
       <path d="M650.904 457.91C576.786 463.524 524.151 480.789 523.404 421.41C522.658 362.031 620.677 307.424 692.404 315.91C751.877 322.946 810.404 355.91 801.404 428.41C794.956 480.354 725.023 452.296 650.904 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#rightEyeClip)">
         <path d="M698.394 422.322C678.669 418.393 644.257 405.188 646.279 377.296C648.738 343.37 688.38 338.212 722.295 344.696C750.416 350.073 787.775 356.691 777.511 395.091C769.323 425.725 718.119 426.251 698.394 422.322Z" fill="currentColor" stroke="currentColor" strokeWidth="21.7077" transform={`translate(${rightPupil.dx - 3.739}, ${rightPupil.dy - 5.979})`}></path>
       </g>
-      
+      <path d="M 523,421 C 574,330, 744,330, 801,428" fill={eyeWhiteColor} stroke="none" style={{ transition: 'transform 0.1s ease-out' }} transform={`translate(0, ${rightEyelidTranslateY})`}></path>
+
       {/* Right Eyebrow */}
-      <g 
+      <path 
+        d="M 490,270 C 530,210, 650,210, 690,270"
+        stroke="currentColor" 
+        strokeWidth="12" 
+        strokeLinecap="round" 
         style={{ transition: 'transform 0.1s ease-out' }} 
         transform={`
           translate(0, ${eyebrowTransform.dy}) 
           rotate(${eyebrowTransform.angle}, ${rightEyebrowSVG_CX}, ${rightEyebrowSVG_CY})
         `}
-      >
-        <g transform="translate(112, -24) rotate(30, 574, 239)">
-          <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10.0412" transform="translate(24.26, -13.98)"></path>
-        </g>
-      </g>
+      />
       
       {/* Mouth */}
       <path transform="scale(1.43) translate(-4, -3)" d="M303.755 322.279C303.755 322.279 306.533 301.467 315.204 302.897C317.611 303.294 319.874 305.306 321.63 307.387C322.882 308.872 326.005 308.326 326.714 306.517C327.558 304.369 328.793 302.219 330.549 301.169C337.703 296.892 347.191 314.644 347.191 314.644" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" opacity="1" pathLength="1" strokeDashoffset="0px" strokeDasharray="1px 1px"></path>
