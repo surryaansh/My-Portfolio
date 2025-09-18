@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 
 interface InteractiveFaceIconProps {
@@ -9,7 +8,7 @@ interface InteractiveFaceIconProps {
 export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursorPosition, isDarkMode }) => {
   const faceRef = useRef<SVGSVGElement>(null);
   const [centers, setCenters] = useState({
-    face: { x: 0, y: 0 },
+    face: { x: 0, y: 0, width: 0 },
     leftEye: { x: 0, y: 0 },
     rightEye: { x: 0, y: 0 },
     leftEyebrow: { x: 0, y: 0 },
@@ -17,11 +16,11 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
   });
 
   useEffect(() => {
+    // Debounced calculation of element positions for responsiveness
     let timeoutId: ReturnType<typeof setTimeout>;
     const calculateCenters = () => {
       if (faceRef.current) {
         const faceRect = faceRef.current.getBoundingClientRect();
-        // ViewBox: "67 105 745 364"
         const viewBox = { x: 67, y: 105, width: 745, height: 364 };
         const scaleX = faceRect.width / viewBox.width;
         const scaleY = faceRect.height / viewBox.height;
@@ -32,7 +31,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         });
 
         setCenters({
-          face: { x: faceRect.left + faceRect.width / 2, y: faceRect.top + faceRect.height / 2 },
+          face: { x: faceRect.left + faceRect.width / 2, y: faceRect.top + faceRect.height / 2, width: faceRect.width },
           leftEye: getScreenCoords(208, 386),
           rightEye: getScreenCoords(662, 386),
           leftEyebrow: getScreenCoords(286, 238),
@@ -48,8 +47,8 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
 
     calculateCenters();
     window.addEventListener('resize', handleResize);
-
-    // Recalculate on initial animation end
+    
+    // Recalculate after initial render/animations settle
     const timer = setTimeout(calculateCenters, 500);
 
     return () => {
@@ -64,31 +63,41 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const dx = cursorPosition.x - eyeCenter.x;
     const dy = cursorPosition.y - eyeCenter.y;
     const angle = Math.atan2(dy, dx);
-    const distance = Math.min(15, Math.sqrt(dx * dx + dy * dy) * 0.1);
+    // Increased sensitivity (0.2) and travel distance (30) for more noticeable movement.
+    const distance = Math.min(30, Math.sqrt(dx * dx + dy * dy) * 0.2);
     return {
       dx: Math.cos(angle) * distance,
       dy: Math.sin(angle) * distance,
     };
   };
 
-  const getEyebrowTransform = (eyebrowCenter: { x: number; y: number }) => {
-    if (!eyebrowCenter.x || !eyebrowCenter.y) return { angle: 0, dy: 0 };
-    
-    const dx = cursorPosition.x - eyebrowCenter.x;
-    const dy = cursorPosition.y - eyebrowCenter.y;
-    
-    const verticalOffset = -(dy / window.innerHeight) * 20;
-    const horizontalRotation = (dx / window.innerWidth) * 20;
-    
-    return { angle: horizontalRotation, dy: verticalOffset };
+  const getEyebrowTransform = (eyebrowCenterY: number) => {
+    if (!centers.face.x || !eyebrowCenterY || !centers.face.width) return { angle: 0, dy: 0 };
+
+    // Vertical movement (raise/lower) based on cursor distance from eyebrow's height
+    const dy_from_eyebrow = cursorPosition.y - eyebrowCenterY;
+    const verticalOffset = -Math.max(-15, Math.min(15, dy_from_eyebrow * 0.1));
+
+    // Horizontal rotation (tilt) based on cursor's horizontal position relative to the face's center
+    const dx_from_face_center = cursorPosition.x - centers.face.x;
+    const maxRotation = 20; // Max tilt in degrees
+    const rotationRange = centers.face.width > 0 ? centers.face.width / 2 : window.innerWidth / 4; // Use half face width for full tilt range
+    const rotationAngle = Math.max(-maxRotation, Math.min(maxRotation, (dx_from_face_center / rotationRange) * maxRotation));
+
+    return { angle: rotationAngle, dy: verticalOffset };
   };
 
   const leftPupil = getPupilTransform(centers.leftEye);
   const rightPupil = getPupilTransform(centers.rightEye);
-  const leftEyebrow = getEyebrowTransform(centers.leftEyebrow);
-  const rightEyebrow = getEyebrowTransform(centers.rightEyebrow);
+  const eyebrowTransform = getEyebrowTransform(centers.leftEyebrow.y); // Both eyebrows share the same transform logic
 
   const eyeWhiteColor = isDarkMode ? '#000000' : '#EEEEEE';
+
+  // SVG coordinates for rotation centers of eyebrows
+  const leftEyebrowSVG_CX = 286;
+  const leftEyebrowSVG_CY = 238;
+  const rightEyebrowSVG_CX = 574;
+  const rightEyebrowSVG_CY = 239;
 
   return (
     <svg ref={faceRef} fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="67 105 745 364">
@@ -108,7 +117,13 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       </g>
       
       {/* Left Eyebrow */}
-      <g style={{ transition: 'transform 0.2s ease-out', transformOrigin: `${centers.leftEyebrow.x}px ${centers.leftEyebrow.y}px` }} transform={`translate(0, ${leftEyebrow.dy}) rotate(${leftEyebrow.angle})`}>
+      <g 
+        style={{ transition: 'transform 0.1s ease-out' }} 
+        transform={`
+          translate(0, ${eyebrowTransform.dy}) 
+          rotate(${eyebrowTransform.angle}, ${leftEyebrowSVG_CX}, ${leftEyebrowSVG_CY})
+        `}
+      >
         <g transform="translate(-72, -9) rotate(-25, 286, 238)">
           <path d="M371.513 318.177L358.587 329.736C350.61 336.869 338.44 336.494 330.918 328.883L200.698 197.134C192.798 189.141 192.994 176.221 201.134 168.472L223.07 147.588C231.394 139.662 244.659 140.327 252.149 149.045L373.359 290.12C380.486 298.415 379.665 310.887 371.513 318.177Z" fill="currentColor" stroke="currentColor" strokeWidth="10.0412" transform="translate(24.26, -13.98)"></path>
         </g>
@@ -121,7 +136,13 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       </g>
       
       {/* Right Eyebrow */}
-      <g style={{ transition: 'transform 0.2s ease-out', transformOrigin: `${centers.rightEyebrow.x}px ${centers.rightEyebrow.y}px` }} transform={`translate(0, ${rightEyebrow.dy}) rotate(${rightEyebrow.angle})`}>
+      <g 
+        style={{ transition: 'transform 0.1s ease-out' }} 
+        transform={`
+          translate(0, ${eyebrowTransform.dy}) 
+          rotate(${eyebrowTransform.angle}, ${rightEyebrowSVG_CX}, ${rightEyebrowSVG_CY})
+        `}
+      >
         <g transform="translate(112, -24) rotate(30, 574, 239)">
           <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10.0412" transform="translate(24.26, -13.98)"></path>
         </g>
