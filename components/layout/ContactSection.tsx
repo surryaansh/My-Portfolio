@@ -10,9 +10,10 @@ interface ContactSectionProps {
   relativeCursorPosition: { x: number; y: number };
   isHoveringLink: boolean;
   isScrolling: boolean;
+  setIsHovering: (isHovering: boolean) => void;
 }
 
-export const ContactSection: React.FC<ContactSectionProps> = ({ isDarkMode, cursorPosition, contactPanelRef, relativeCursorPosition, isHoveringLink, isScrolling }) => {
+export const ContactSection: React.FC<ContactSectionProps> = ({ isDarkMode, cursorPosition, contactPanelRef, relativeCursorPosition, isHoveringLink, isScrolling, setIsHovering }) => {
   const borderClasses = isDarkMode ? 'border-[#efeeee]' : 'border-black';
   const divideClasses = isDarkMode ? 'divide-[#efeeee]' : 'divide-black';
 
@@ -25,6 +26,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ isDarkMode, curs
         relativeCursorPosition={relativeCursorPosition}
         isHoveringLink={isHoveringLink}
         isScrolling={isScrolling}
+        setIsHovering={setIsHovering}
       />
     </section>
   );

@@ -5,10 +5,11 @@ interface ContactRightPanelProps {
   relativeCursorPosition: { x: number; y: number };
   isHoveringLink: boolean;
   isScrolling: boolean;
+  setIsHovering: (isHovering: boolean) => void;
 }
 
 export const ContactRightPanel = forwardRef<HTMLDivElement, ContactRightPanelProps>(
-  ({ isDarkMode, relativeCursorPosition, isHoveringLink, isScrolling }, ref) => {
+  ({ isDarkMode, relativeCursorPosition, isHoveringLink, isScrolling, setIsHovering }, ref) => {
     const [isButtonHovered, setIsButtonHovered] = useState(false);
 
     const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
@@ -17,7 +18,11 @@ export const ContactRightPanel = forwardRef<HTMLDivElement, ContactRightPanelPro
     }`;
 
     return (
-      <div className="w-full lg:w-1/2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
+      <div 
+        className="w-full lg:w-1/2 flex flex-col lg:pl-6 pt-8 lg:pt-0"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
         <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
           <span>06 CONTACT</span>
           <span>/06</span>

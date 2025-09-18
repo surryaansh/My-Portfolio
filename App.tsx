@@ -37,6 +37,8 @@ export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isHoveringMainImage, setIsHoveringMainImage] = useState(false);
+  const [isHoveringContactImage, setIsHoveringContactImage] = useState(false);
   
   /**
    * Handles the theme toggle with a smooth circular reveal animation
@@ -104,6 +106,7 @@ export default function App() {
 
   const themeClasses = isDarkMode ? 'bg-black text-[#efeeee]' : 'bg-[#efeeee] text-black';
   const borderClasses = isDarkMode ? 'divide-[#efeeee] border-[#efeeee]' : 'divide-black border-black';
+  const shouldHideGlobalCursorOnScroll = isScrolling && (isHoveringMainImage || isHoveringContactImage);
   
   return (
     <div 
@@ -114,7 +117,7 @@ export default function App() {
         position={cursorPosition} 
         isHoveringLink={isHoveringLink} 
         isTransitioning={isTransitioning}
-        isScrolling={isScrolling}
+        isScrolling={shouldHideGlobalCursorOnScroll}
       />
       
       <MemoizedHeader isDarkMode={isDarkMode} toggleDarkMode={handleThemeToggle} />
@@ -128,6 +131,7 @@ export default function App() {
             isHoveringLink={isHoveringLink}
             relativeCursorPosition={mainRelativeCursorPosition}
             isScrolling={isScrolling}
+            setIsHovering={setIsHoveringMainImage}
           />
         </section>
 
@@ -145,6 +149,7 @@ export default function App() {
           relativeCursorPosition={contactRelativeCursorPosition}
           isHoveringLink={isHoveringLink}
           isScrolling={isScrolling}
+          setIsHovering={setIsHoveringContactImage}
         />
         
         <MemoizedFooter isDarkMode={isDarkMode} />

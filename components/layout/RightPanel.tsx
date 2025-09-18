@@ -6,10 +6,11 @@ interface RightPanelProps {
   isHoveringLink: boolean;
   relativeCursorPosition: { x: number; y: number };
   isScrolling: boolean;
+  setIsHovering: (isHovering: boolean) => void;
 }
 
 export const RightPanel = forwardRef<HTMLDivElement, RightPanelProps>(
-  ({ isDarkMode, isHoveringLink, relativeCursorPosition, isScrolling }, ref) => {
+  ({ isDarkMode, isHoveringLink, relativeCursorPosition, isScrolling, setIsHovering }, ref) => {
     const grayTextClasses = `transition-colors duration-300 ease-in-out ${
       isDarkMode
         ? 'text-gray-400'
@@ -17,7 +18,11 @@ export const RightPanel = forwardRef<HTMLDivElement, RightPanelProps>(
     }`;
   
     return (
-      <div className="w-full lg:w-1/2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
+      <div 
+        className="w-full lg:w-1/2 flex flex-col lg:pl-6 pt-8 lg:pt-0"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
         <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
           <span>01 LOGO</span>
           <span>/01</span>
