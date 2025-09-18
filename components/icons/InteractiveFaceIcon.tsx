@@ -61,7 +61,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       return { dx: 0, dy: 0 };
     }
     
-    const maxTravelX = 45;
+    const maxTravelX = 60;
     const maxTravelY = 30;
     const sensitivity = 0.4;
 

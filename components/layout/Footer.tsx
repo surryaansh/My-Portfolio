@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
       </div>
 
       {/* Centered navigation section */}
-      <div className="flex justify-center items-center py-10">
+      <div className="flex justify-center items-center pt-6 pb-10">
         <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xl">
           <a href="#" className="transition-opacity duration-200">ABOUT ME</a>
           <a href="#" className="transition-opacity duration-200">PROJECTS</a>
