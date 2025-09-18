@@ -94,8 +94,17 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const sensitivity = 0.4; // How strongly the pupil reacts to cursor movement.
 
     // 1. Calculate displacement in screen pixels.
-    const dx_pixels = (cursorPosition.x - eyeCenter.x) * sensitivity;
-    const dy_pixels = (cursorPosition.y - eyeCenter.y) * sensitivity;
+    const dx_pixels_raw = cursorPosition.x - eyeCenter.x;
+    const dy_pixels_raw = cursorPosition.y - eyeCenter.y;
+    
+    let dx_pixels = dx_pixels_raw * sensitivity;
+    let dy_pixels = dy_pixels_raw * sensitivity;
+
+    // When cursor is to the right of the eye, exaggerate horizontal movement and add a slight downward shift.
+    if (dx_pixels_raw > 0) {
+      dx_pixels *= 1.8; // Increased horizontal shift
+      dy_pixels += dx_pixels_raw * 0.05; // Add vertical shift
+    }
     
     // 2. Convert pixel displacement to SVG coordinate units using the calculated scale.
     let dx = dx_pixels / scale.x;
