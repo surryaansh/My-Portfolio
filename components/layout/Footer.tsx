@@ -13,7 +13,7 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   const borderClasses = isDarkMode ? 'border-[#efeeee]' : 'border-black';
 
   return (
-    <footer className="w-full">
+    <footer className="w-full mb-4">
       {/* Top border */}
       <div className={`border-t ${borderClasses}`} />
 
@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
       </div>
 
       {/* Centered navigation section */}
-      <div className="flex justify-center items-center pt-6 pb-10">
+      <div className="flex justify-center items-center pt-5 pb-11">
         <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xl">
           <a href="#" className="transition-opacity duration-200">ABOUT ME</a>
           <a href="#" className="transition-opacity duration-200">PROJECTS</a>
