@@ -32,7 +32,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
       : 'text-gray-600'
   }`;
   const borderClasses = isDarkMode ? 'border-[#efeeee]' : 'border-black';
-  const iconClasses = "w-24 h-24 md:w-[7.5rem] md:h-[7.5rem]";
+  const iconClasses = "h-14 md:h-16";
 
   return (
     <section className={`border-t ${borderClasses}`}>
@@ -41,7 +41,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
         <span>/04</span>
       </div>
       <div className="overflow-hidden py-3">
-        <div className="flex w-max animate-scroll-left hover:[animation-play-state:paused]">
+        <div className="flex items-center w-max animate-scroll-left hover:[animation-play-state:paused]">
           {[...skills, ...skills].map((SkillComponent, index) => (
             <div key={index} className="px-5 sm:px-7 md:px-10 flex-shrink-0">
               <SkillComponent className={iconClasses} />

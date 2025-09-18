@@ -10,7 +10,7 @@ export const ExpressSkillIcon: React.FC<IconProps> = ({ className }) => {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 165 60"
-        className="w-full h-auto"
+        className="h-full w-auto"
         fill="currentColor"
       >
         <g transform="matrix(0.85101532,0,0,0.85101532,5.5198422,-24.472693)">

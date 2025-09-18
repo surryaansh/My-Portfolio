@@ -11,7 +11,7 @@ export const NodeSkillIcon: React.FC<IconProps> = ({ className }) => {
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 951.003 267.504"
-        className="w-full h-auto"
+        className="h-full w-auto"
         fill="currentColor"
       >
         <g>
