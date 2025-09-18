@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 import { ReactSkillIcon } from '../icons/skills/ReactSkillIcon.tsx';
 import { NodeSkillIcon } from '../icons/skills/NodeSkillIcon.tsx';
@@ -44,7 +43,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
         <span>04 SKILLS</span>
         <span>/04</span>
       </div>
-      <div className="overflow-hidden py-3">
+      <div className="overflow-hidden py-1">
         <div className="flex w-max animate-scroll-left hover:[animation-play-state:paused]">
           {[...skills, ...skills].map((skill, index) => (
             <div key={index} className="px-5 sm:px-7 md:px-10 flex-shrink-0 flex items-center justify-center">
