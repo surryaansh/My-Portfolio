@@ -6,6 +6,8 @@ import { ExpressSkillIcon } from '../icons/skills/ExpressSkillIcon.tsx';
 import { MongoSkillIcon } from '../icons/skills/MongoSkillIcon.tsx';
 import { EthereumSkillIcon } from '../icons/skills/EthereumSkillIcon.tsx';
 import { SoliditySkillIcon } from '../icons/skills/SoliditySkillIcon.tsx';
+import { MetamaskSkillIcon } from '../icons/skills/MetamaskSkillIcon.tsx';
+import { PolygonSkillIcon } from '../icons/skills/PolygonSkillIcon.tsx';
 import { TypescriptSkillIcon } from '../icons/skills/TypescriptSkillIcon.tsx';
 import { PythonSkillIcon } from '../icons/skills/PythonSkillIcon.tsx';
 
@@ -20,6 +22,8 @@ const skills = [
   { component: MongoSkillIcon, transform: 'transform -translate-y-px', size: 'w-28 h-28 md:w-[8.5rem] md:h-[8.5rem]' },
   { component: EthereumSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[10.5rem] md:h-[10.5rem]' },
   { component: SoliditySkillIcon, transform: 'transform -translate-y-px' },
+  { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-48 md:w-[12rem]' },
+  { component: PolygonSkillIcon, transform: 'transform -translate-y-px', size: 'w-48 md:w-[12rem]' },
   { component: TypescriptSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[11rem] md:h-[11rem]' },
   { component: PythonSkillIcon },
 ];
