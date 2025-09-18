@@ -28,7 +28,7 @@ const skills = [
   { component: SoliditySkillIcon, transform: 'transform -translate-y-px' },
   { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
   { component: PolygonSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
-  { component: TypescriptSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[11rem] md:h-[11rem]' },
+  { component: TypescriptSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[11rem] md:h-[11rem]', margin: 'mr-6 sm:mr-8 md:mr-10' },
 ];
 
 export const SkillsSection: React.FC<SkillsSectionProps> = ({ isDarkMode }) => {
