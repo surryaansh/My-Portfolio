@@ -6,7 +6,7 @@ interface ContactRightPanelProps {
 
 export const ContactRightPanel: React.FC<ContactRightPanelProps> = ({ isDarkMode }) => {
   const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
-  const buttonClasses = `px-10 py-5 md:px-12 md:py-6 rounded-full text-lg md:text-xl font-bold transition-transform transition-colors duration-200 hover:scale-105 hover:bg-[#FF4500] ${
+  const buttonClasses = `px-8 py-4 md:px-10 md:py-5 rounded-full text-base md:text-lg font-bold transition-colors duration-300 ease-in-out hover:bg-[#FF4500] ${
     isDarkMode ? 'bg-[#efeeee] text-black' : 'bg-black text-[#efeeee]'
   }`;
 
