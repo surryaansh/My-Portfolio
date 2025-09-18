@@ -5,10 +5,11 @@ interface RightPanelProps {
   isDarkMode: boolean;
   isHoveringLink: boolean;
   relativeCursorPosition: { x: number; y: number };
+  isScrolling: boolean;
 }
 
 export const RightPanel = forwardRef<HTMLDivElement, RightPanelProps>(
-  ({ isDarkMode, isHoveringLink, relativeCursorPosition }, ref) => {
+  ({ isDarkMode, isHoveringLink, relativeCursorPosition, isScrolling }, ref) => {
     const grayTextClasses = `transition-colors duration-300 ease-in-out ${
       isDarkMode
         ? 'text-gray-400'
@@ -39,7 +40,8 @@ export const RightPanel = forwardRef<HTMLDivElement, RightPanelProps>(
               pointerEvents: 'none',
               transform: 'translate(-50%, -50%)',
               zIndex: 10000,
-              transition: 'width 0.2s ease, height 0.2s ease',
+              transition: 'width 0.2s ease, height 0.2s ease, opacity 0.2s ease-out',
+              opacity: isScrolling ? 0 : 1,
             }}
             aria-hidden="true"
           />

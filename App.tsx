@@ -1,4 +1,4 @@
-import React, { useState, useRef, memo } from 'react';
+import React, { useState, useRef, memo, useEffect } from 'react';
 import { Header } from './components/layout/Header.tsx';
 import { LeftPanel } from './components/layout/LeftPanel.tsx';
 import { RightPanel } from './components/layout/RightPanel.tsx';
@@ -36,6 +36,7 @@ export default function App() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   
   /**
    * Handles the theme toggle with a smooth circular reveal animation
@@ -81,6 +82,26 @@ export default function App() {
     });
   };
 
+  // Effect to detect when the user is scrolling to hide elements
+  // that might glitch due to position calculations during scroll.
+  useEffect(() => {
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+
+    const handleScroll = () => {
+      setIsScrolling(true);
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        setIsScrolling(false);
+      }, 100); // A short delay to determine when scrolling has stopped
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, []);
+
   const themeClasses = isDarkMode ? 'bg-black text-[#efeeee]' : 'bg-[#efeeee] text-black';
   const borderClasses = isDarkMode ? 'divide-[#efeeee] border-[#efeeee]' : 'divide-black border-black';
   
@@ -105,6 +126,7 @@ export default function App() {
             isDarkMode={isDarkMode} 
             isHoveringLink={isHoveringLink}
             relativeCursorPosition={mainRelativeCursorPosition}
+            isScrolling={isScrolling}
           />
         </section>
 
@@ -121,6 +143,7 @@ export default function App() {
           contactPanelRef={contactImageContainerRef}
           relativeCursorPosition={contactRelativeCursorPosition}
           isHoveringLink={isHoveringLink}
+          isScrolling={isScrolling}
         />
         
         <MemoizedFooter isDarkMode={isDarkMode} />

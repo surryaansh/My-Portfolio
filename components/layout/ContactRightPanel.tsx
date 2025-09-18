@@ -4,10 +4,11 @@ interface ContactRightPanelProps {
   isDarkMode: boolean;
   relativeCursorPosition: { x: number; y: number };
   isHoveringLink: boolean;
+  isScrolling: boolean;
 }
 
 export const ContactRightPanel = forwardRef<HTMLDivElement, ContactRightPanelProps>(
-  ({ isDarkMode, relativeCursorPosition, isHoveringLink }, ref) => {
+  ({ isDarkMode, relativeCursorPosition, isHoveringLink, isScrolling }, ref) => {
     const [isButtonHovered, setIsButtonHovered] = useState(false);
 
     const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
@@ -36,7 +37,8 @@ export const ContactRightPanel = forwardRef<HTMLDivElement, ContactRightPanelPro
               pointerEvents: 'none',
               transform: 'translate(-50%, -50%)',
               zIndex: 10000,
-              transition: 'width 0.2s ease, height 0.2s ease',
+              transition: 'width 0.2s ease, height 0.2s ease, opacity 0.2s ease-out',
+              opacity: isScrolling ? 0 : 1,
             }}
             aria-hidden="true"
           />
