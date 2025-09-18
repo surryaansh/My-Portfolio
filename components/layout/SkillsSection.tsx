@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { ReactSkillIcon } from '../icons/skills/ReactSkillIcon.tsx';
 import { NodeSkillIcon } from '../icons/skills/NodeSkillIcon.tsx';
@@ -22,8 +23,8 @@ const skills = [
   { component: MongoSkillIcon, transform: 'transform -translate-y-px', size: 'w-28 h-28 md:w-[8.5rem] md:h-[8.5rem]' },
   { component: EthereumSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[10.5rem] md:h-[10.5rem]' },
   { component: SoliditySkillIcon, transform: 'transform -translate-y-px' },
-  { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-48 md:w-[12rem]' },
-  { component: PolygonSkillIcon, transform: 'transform -translate-y-px', size: 'w-48 md:w-[12rem]' },
+  { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
+  { component: PolygonSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
   { component: TypescriptSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 h-40 md:w-[11rem] md:h-[11rem]' },
   { component: PythonSkillIcon },
 ];
