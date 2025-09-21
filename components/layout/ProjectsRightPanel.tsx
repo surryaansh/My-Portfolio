@@ -41,7 +41,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <img
           src={project.images[0]}
           alt={`${project.name} screenshot 1`}
-          className={`${imageBaseClasses} w-[45%] h-auto max-h-[45%] bottom-0 left-[20%]`}
+          className={`${imageBaseClasses} w-[45%] h-auto max-h-[45%] bottom-8 left-[10%]`}
           style={{ zIndex: 10 }}
           aria-hidden="true"
         />
