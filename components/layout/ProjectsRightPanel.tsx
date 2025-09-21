@@ -25,20 +25,9 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
     );
   }
 
-  // Placeholder styles for image containers. You can replace the divs with <img> tags.
-  const placeholderBase = 'rounded-xl border shadow-lg flex items-center justify-center text-sm text-gray-500';
-  const placeholderColors = [
-    'bg-pink-100 border-pink-200',
-    'bg-blue-100 border-blue-200',
-    'bg-green-100 border-green-200',
-    'bg-yellow-100 border-yellow-200',
-  ];
-  if(isDarkMode) {
-    placeholderColors[0] = 'bg-pink-900/30 border-pink-700/50';
-    placeholderColors[1] = 'bg-blue-900/30 border-blue-700/50';
-    placeholderColors[2] = 'bg-green-900/30 border-green-700/50';
-    placeholderColors[3] = 'bg-yellow-900/30 border-yellow-700/50';
-  }
+  const imageBaseClasses = `absolute object-cover rounded-xl border shadow-lg transition-transform duration-300 hover:scale-105 hover:z-40 ${
+    isDarkMode ? 'border-gray-700/50' : 'border-gray-200'
+  }`;
 
   return (
     <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
@@ -51,27 +40,43 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
           <p className="text-base leading-relaxed">{project.description}</p>
         </div>
         <div className="w-full md:w-2/3 min-h-[400px] md:min-h-0 relative">
-          {/* Image Collage Placeholders - Scattered layout */}
-          <div
-            title="Project image 1"
-            className={`absolute w-[50%] h-[65%] bottom-[5%] left-[15%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[0]}`}
-            style={{ zIndex: 30 }}
-          ><p>Image 1</p></div>
-          <div
-            title="Project image 2"
-            className={`absolute w-[60%] h-[85%] bottom-0 right-0 transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[1]}`}
+          {/* New Image Collage Layout - Less overlap */}
+          
+          {/* Back Right Image */}
+          <img
+            src={project.images[0]}
+            alt={`${project.name} screenshot 1`}
+            className={`${imageBaseClasses} w-[55%] h-[65%] bottom-0 right-0`}
             style={{ zIndex: 10 }}
-          ><p>Image 2</p></div>
-          <div
-            title="Project image 3"
-            className={`absolute w-[40%] h-[55%] bottom-[25%] left-0 transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[2]}`}
+            aria-hidden="true"
+          />
+
+          {/* Top Left Image */}
+          <img
+            src={project.images[3]}
+            alt={`${project.name} screenshot 4`}
+            className={`${imageBaseClasses} w-[35%] h-[35%] top-[10%] left-0`}
             style={{ zIndex: 20 }}
-          ><p>Image 3</p></div>
-           <div
-            title="Project image 4"
-            className={`absolute w-[45%] h-[35%] bottom-0 right-[10%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[3]}`}
-            style={{ zIndex: 25 }}
-          ><p>Image 4</p></div>
+            aria-hidden="true"
+          />
+
+          {/* Mid Left Image */}
+          <img
+            src={project.images[1]}
+            alt={`${project.name} screenshot 2`}
+            className={`${imageBaseClasses} w-[50%] h-[50%] bottom-[25%] left-[5%]`}
+            style={{ zIndex: 20 }}
+            aria-hidden="true"
+          />
+
+          {/* Front Center Image */}
+          <img
+            src={project.images[2]}
+            alt={`${project.name} screenshot 3`}
+            className={`${imageBaseClasses} w-[40%] h-[55%] bottom-0 left-[30%]`}
+            style={{ zIndex: 30 }}
+            aria-hidden="true"
+          />
         </div>
       </div>
     </div>
