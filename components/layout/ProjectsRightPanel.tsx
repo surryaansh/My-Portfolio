@@ -46,11 +46,11 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
           aria-hidden="true"
         />
 
-        {/* Image 2 (barkchain-2.png) - Added to the top right with a slight overlap */}
+        {/* Image 2 (barkchain-2.png) - Let image retain its original aspect ratio and reduce size */}
         <img
           src={project.images[1]}
           alt={`${project.name} screenshot 2`}
-          className={`${imageBaseClasses} w-[40%] h-auto max-h-[50%] top-4 right-[15%]`}
+          className={`${imageBaseClasses} w-[35%] h-auto top-4 right-[15%]`}
           style={{ zIndex: 20 }}
           aria-hidden="true"
         />
