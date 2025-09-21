@@ -24,8 +24,8 @@ export const ContactRightPanel = forwardRef<HTMLDivElement, ContactRightPanelPro
         onMouseLeave={() => setIsHovering(false)}
       >
         <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
-          <span>06 CONTACT</span>
-          <span>/06</span>
+          <span>07 CONTACT</span>
+          <span>/07</span>
         </div>
         <div ref={ref} className="flex-1 relative overflow-hidden px-2 pt-0 pb-6 lg:px-0">
           {/* This is the solid cursor, only visible when inside this container to prevent color inversion */}

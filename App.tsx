@@ -6,6 +6,7 @@ import { BlendedCursor } from './components/BlendedCursor.tsx';
 import { ProjectsLeftPanel } from './components/layout/ProjectsLeftPanel.tsx';
 import { ProjectsRightPanel } from './components/layout/ProjectsRightPanel.tsx';
 import { SkillsSection } from './components/layout/SkillsSection.tsx';
+import { ShowcaseSection } from './components/layout/ShowcaseSection.tsx';
 import { ContactSection } from './components/layout/ContactSection.tsx';
 import { Footer } from './components/layout/Footer.tsx';
 import { useMousePosition } from './hooks/useMousePosition.ts';
@@ -17,6 +18,7 @@ const MemoizedLeftPanel = memo(LeftPanel);
 const MemoizedProjectsLeftPanel = memo(ProjectsLeftPanel);
 const MemoizedProjectsRightPanel = memo(ProjectsRightPanel);
 const MemoizedSkillsSection = memo(SkillsSection);
+const MemoizedShowcaseSection = memo(ShowcaseSection);
 const MemoizedFooter = memo(Footer);
 
 /**
@@ -141,6 +143,8 @@ export default function App() {
         </section>
         
         <MemoizedSkillsSection isDarkMode={isDarkMode} />
+
+        <MemoizedShowcaseSection isDarkMode={isDarkMode} />
 
         <ContactSection 
           isDarkMode={isDarkMode} 

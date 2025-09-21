@@ -23,6 +23,7 @@ export const Header: React.FC<HeaderProps> = ({ isDarkMode, toggleDarkMode }) =>
       <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xl">
         <a href="#projects" onClick={handleScroll} className="transition-opacity duration-200">PROJECTS</a>
         <a href="#skills" onClick={handleScroll} className="transition-opacity duration-200">SKILLS</a>
+        <a href="#showcase" onClick={handleScroll} className="transition-opacity duration-200">SHOWCASE</a>
         <a href="#contact" onClick={handleScroll} className="transition-opacity duration-200">LET'S CONNECT</a>
       </nav>
     </header>

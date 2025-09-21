@@ -13,8 +13,8 @@ export const ContactLeftPanel: React.FC<ContactLeftPanelProps> = ({ isDarkMode, 
   return (
     <div className="w-full lg:w-1/2 flex flex-col lg:pr-6 py-8 lg:py-0">
       <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
-        <span>05 CONTACT</span>
-        <span>/05</span>
+        <span>06 CONTACT</span>
+        <span>/06</span>
       </div>
       <div className="flex-1 flex flex-col justify-between pt-8 pb-12">
         <h2 className="text-4xl md:text-5xl font-light leading-tight">
