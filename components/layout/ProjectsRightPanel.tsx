@@ -34,17 +34,17 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <span>03 WORK</span>
         <span>/03</span>
       </div>
-      <div key={project.name} className="flex-1 flex flex-col md:flex-row gap-8 py-8 animate-fade-in">
+      <div key={project.name} className="flex-1 flex flex-col md:flex-row gap-8 pt-8 pb-2 animate-fade-in">
         <div className="w-full md:w-1/3 flex flex-col">
           <p className="text-base leading-relaxed">{project.description}</p>
         </div>
         {/* Step-by-step collage layout */}
-        <div className="w-full md:w-2/3 min-h-[400px] md:min-h-[500px] relative">
+        <div className="w-full md:w-2/3 min-h-[350px] relative">
           {/* Image 1: barkchain-1.png, positioned as requested */}
           <img
             src={project.images[0]}
             alt={`${project.name} screenshot 1`}
-            className={`${imageBaseClasses} bottom-0 left-8 w-2/3 h-auto`}
+            className={`${imageBaseClasses} bottom-0 left-0 w-2/3 h-auto`}
             style={{ zIndex: 10 }}
             aria-hidden="true"
           />
