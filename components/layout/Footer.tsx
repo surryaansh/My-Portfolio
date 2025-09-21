@@ -19,9 +19,9 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
       {/* Top border */}
       <div className={`border-t ${borderClasses}`} />
 
-      {/* Top line: 08 FOOTER and Copyright */}
+      {/* Top line: 07 FOOTER and Copyright */}
       <div className={`flex justify-between items-center text-[10px] py-2 ${grayTextClasses}`}>
-        <span>08 FOOTER</span>
+        <span>07 FOOTER</span>
         <span>© SURYANSH</span>
       </div>
 
@@ -31,7 +31,6 @@ export const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
           <a href="#about" onClick={handleScroll} className="transition-opacity duration-200">ABOUT ME</a>
           <a href="#projects" onClick={handleScroll} className="transition-opacity duration-200">PROJECTS</a>
           <a href="#skills" onClick={handleScroll} className="transition-opacity duration-200">SKILLS</a>
-          <a href="#showcase" onClick={handleScroll} className="transition-opacity duration-200">SHOWCASE</a>
           <a href="mailto:suryanshs1804@gmail.com" className="transition-opacity duration-200">CONTACT</a>
         </nav>
       </div>
