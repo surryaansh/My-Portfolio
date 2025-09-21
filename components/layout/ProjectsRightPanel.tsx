@@ -41,7 +41,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <img
           src={project.images[0]}
           alt={`${project.name} screenshot 1`}
-          className={`${imageBaseClasses} w-[45%] h-auto max-h-[45%] bottom-4 left-[10%]`}
+          className={`${imageBaseClasses} w-[45%] h-auto max-h-[45%] bottom-4 left-[8%]`}
           style={{ zIndex: 10 }}
           aria-hidden="true"
         />
@@ -50,7 +50,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <img
           src={project.images[1]}
           alt={`${project.name} screenshot 2`}
-          className={`${imageBaseClasses} w-[28%] h-auto top-[3%] right-[45%]`}
+          className={`${imageBaseClasses} w-[28%] h-auto top-[3%] right-[43%]`}
           style={{ zIndex: 20 }}
           aria-hidden="true"
         />
