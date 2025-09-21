@@ -23,7 +23,6 @@ export const PROJECTS_DATA = [
     images: [
       '/mydash-1.png',
       '/mydash-2.png',
-      '/mydash-3.png',
       '/mydash-4.png',
     ],
     link: "#" // Placeholder
