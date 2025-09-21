@@ -38,38 +38,41 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <div className="w-full md:w-1/2 flex flex-col">
           <p className="text-base leading-relaxed">{project.description}</p>
         </div>
-        {/* New Collage Layout based on user's sketch */}
+        {/* New Collage Layout based on user's new reference image */}
         <div className="w-full md:w-2/3 relative mt-8 md:mt-0" style={{ minHeight: '450px' }}>
-          {/* Image 1 (Bottom-left) */}
+          {/* Image 1 ('SUPPORT A PUP') - Background layer */}
           <img
             src={project.images[0]}
             alt={`${project.name} screenshot 1`}
-            className={`${imageBaseClasses} w-[60%] h-auto bottom-0 left-0`}
+            className={`${imageBaseClasses} w-[60%] h-auto top-0 right-0`}
             style={{ zIndex: 10 }}
             aria-hidden="true"
           />
-          {/* Image 2 (Middle-left, on top of #1) */}
-           <img
-            src={project.images[1]}
-            alt={`${project.name} screenshot 2`}
-            className={`${imageBaseClasses} w-[45%] h-auto bottom-[20%] left-[10%]`}
-            style={{ zIndex: 20 }}
-            aria-hidden="true"
-          />
-          {/* Image 3 (Middle-right, on top of all) */}
+
+          {/* Image 3 ('SOS FEED') - Middle layer, left */}
           <img
             src={project.images[2]}
             alt={`${project.name} screenshot 3`}
-            className={`${imageBaseClasses} w-[55%] h-auto top-[25%] left-[30%] hover:z-40`}
-            style={{ zIndex: 30 }}
+            className={`${imageBaseClasses} w-[45%] h-auto top-[15%] left-[5%]`}
+            style={{ zIndex: 20 }}
             aria-hidden="true"
           />
-          {/* Image 4 (Tall, top-right) */}
+
+          {/* Image 4 ('FIND A FRIEND') - Middle layer, bottom-left */}
           <img
             src={project.images[3]}
             alt={`${project.name} screenshot 4`}
-            className={`${imageBaseClasses} w-[40%] h-[90%] top-0 right-0 object-top`}
+            className={`${imageBaseClasses} w-[40%] h-auto bottom-0 left-0`}
             style={{ zIndex: 20 }}
+            aria-hidden="true"
+          />
+          
+          {/* Image 2 ('bark chain.') - Top layer, center-ish */}
+          <img
+            src={project.images[1]}
+            alt={`${project.name} screenshot 2`}
+            className={`${imageBaseClasses} w-[38%] h-auto top-[28%] left-[28%]`}
+            style={{ zIndex: 30 }}
             aria-hidden="true"
           />
         </div>
