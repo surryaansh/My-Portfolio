@@ -27,6 +27,11 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
 
   const imageBaseClasses = `absolute object-cover border ${isDarkMode ? 'border-neutral-800' : 'border-black'} transition-transform duration-300 hover:scale-[1.02]`;
 
+  // Conditionally set the classes for the third image to adjust its position for 'SURU GPT'.
+  const thirdImagePositionClasses = project.name === 'SURU GPT'
+    ? 'bottom-[14%] right-[31%]' // New position: 4% down, 7% left
+    : 'bottom-[18%] right-[24%]'; // Default position
+
   return (
     <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
       <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
@@ -61,7 +66,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <img
           src={project.images[2]}
           alt={`${project.name} screenshot 3`}
-          className={`${imageBaseClasses} w-[22.5%] h-auto bottom-[18%] right-[24%]`}
+          className={`${imageBaseClasses} w-[22.5%] h-auto ${thirdImagePositionClasses}`}
           style={{ zIndex: 30 }}
           aria-hidden="true"
         />
