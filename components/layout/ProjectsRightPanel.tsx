@@ -40,41 +40,41 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
           <p className="text-base leading-relaxed">{project.description}</p>
         </div>
         <div className="w-full md:w-2/3 min-h-[400px] md:min-h-0 relative">
-          {/* New Image Collage Layout - Less overlap */}
+          {/* New Image Collage Layout based on user feedback */}
           
-          {/* Back Right Image */}
+          {/* Image 1 (barkchain-1.png) -> Top Right */}
           <img
             src={project.images[0]}
             alt={`${project.name} screenshot 1`}
-            className={`${imageBaseClasses} w-[55%] h-[65%] bottom-0 right-0`}
+            className={`${imageBaseClasses} w-[60%] h-[55%] top-0 right-0`}
+            style={{ zIndex: 20 }}
+            aria-hidden="true"
+          />
+
+          {/* Image 4 (barkchain-4.png) -> Bottom Left */}
+          <img
+            src={project.images[3]}
+            alt={`${project.name} screenshot 4`}
+            className={`${imageBaseClasses} w-[65%] h-[60%] bottom-0 left-0`}
             style={{ zIndex: 10 }}
             aria-hidden="true"
           />
 
-          {/* Top Left Image */}
-          <img
-            src={project.images[3]}
-            alt={`${project.name} screenshot 4`}
-            className={`${imageBaseClasses} w-[35%] h-[35%] top-[10%] left-0`}
-            style={{ zIndex: 20 }}
-            aria-hidden="true"
-          />
-
-          {/* Mid Left Image */}
+          {/* Image 2 (barkchain-2.png) -> Center, slightly left */}
           <img
             src={project.images[1]}
             alt={`${project.name} screenshot 2`}
-            className={`${imageBaseClasses} w-[50%] h-[50%] bottom-[25%] left-[5%]`}
-            style={{ zIndex: 20 }}
+            className={`${imageBaseClasses} w-[45%] h-[40%] top-1/2 left-[5%] transform -translate-y-1/2`}
+            style={{ zIndex: 30 }}
             aria-hidden="true"
           />
 
-          {/* Front Center Image */}
+          {/* Image 3 (barkchain-3.png) -> Center, slightly right, connecting the others */}
           <img
             src={project.images[2]}
             alt={`${project.name} screenshot 3`}
-            className={`${imageBaseClasses} w-[40%] h-[55%] bottom-0 left-[30%]`}
-            style={{ zIndex: 30 }}
+            className={`${imageBaseClasses} w-[40%] h-[50%] bottom-[5%] right-[20%]`}
+            style={{ zIndex: 40 }}
             aria-hidden="true"
           />
         </div>
