@@ -29,8 +29,15 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
 
   // Conditionally set the classes for the third image to adjust its position for 'SURU GPT'.
   const thirdImagePositionClasses = project.name === 'SURU GPT'
-    ? 'bottom-[12%] right-[28%]' // Adjusted position: 1% more to the right
-    : 'bottom-[18%] right-[24%]'; // Default position
+    ? 'bottom-[12%] right-[28%]'
+    : 'bottom-[18%] right-[24%]';
+
+  // Conditionally set the classes for the second image to adjust its position for 'MYDASH'.
+  const secondImagePositionClasses = project.name === 'MYDASH'
+    ? 'top-[24%] right-[24%]' // Moved 10% down and 20% right
+    : 'top-[8%] right-[44%]'; // Default position
+
+  const secondImageZIndex = project.name === 'MYDASH' ? 40 : 20;
 
   return (
     <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
@@ -57,23 +64,25 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <img
           src={project.images[1]}
           alt={`${project.name} screenshot 2`}
-          className={`${imageBaseClasses} w-[25%] h-auto top-[8%] right-[44%]`}
-          style={{ zIndex: 20 }}
+          className={`${imageBaseClasses} w-[25%] h-auto ${secondImagePositionClasses}`}
+          style={{ zIndex: secondImageZIndex }}
           aria-hidden="true"
         />
 
-        {/* Image 3 (barkchain-3.png) */}
-        <img
-          src={project.images[2]}
-          alt={`${project.name} screenshot 3`}
-          className={`${imageBaseClasses} w-[22.5%] h-auto ${thirdImagePositionClasses}`}
-          style={{ zIndex: 30 }}
-          aria-hidden="true"
-        />
+        {/* Image 3 (barkchain-3.png) - Conditionally render for projects with 4 images */}
+        {project.images.length > 3 && (
+          <img
+            src={project.images[2]}
+            alt={`${project.name} screenshot 3`}
+            className={`${imageBaseClasses} w-[22.5%] h-auto ${thirdImagePositionClasses}`}
+            style={{ zIndex: 30 }}
+            aria-hidden="true"
+          />
+        )}
 
-        {/* Image 4 (barkchain-4.png) */}
+        {/* Image 4 (barkchain-4.png) - Use last image in array */}
         <img
-          src={project.images[3]}
+          src={project.images.length > 3 ? project.images[3] : project.images[2]}
           alt={`${project.name} screenshot 4`}
           className={`${imageBaseClasses} h-[92%] w-auto bottom-4 right-0`}
           style={{ zIndex: 25 }}
