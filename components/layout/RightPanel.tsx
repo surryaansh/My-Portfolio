@@ -43,7 +43,7 @@ export const RightPanel = forwardRef<HTMLDivElement, RightPanelProps>(
               height: `${isHoveringLink ? 60 : 40}px`,
               backgroundColor: isDarkMode ? 'white' : 'black',
               borderRadius: '50%',
-              pointerEvents: 'none',
+              pointerEvents: 'none', // This allows events to pass through to the canvas
               transform: 'translate(-50%, -50%)',
               zIndex: 10000,
               transition: 'width 0.2s ease, height 0.2s ease, opacity 0.2s ease-out',
