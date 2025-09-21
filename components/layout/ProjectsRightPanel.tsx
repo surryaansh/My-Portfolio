@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { PROJECTS_DATA } from '../../constants/projects.ts';
 
@@ -31,11 +32,11 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
   const isMydash = project.name === 'MYDASH';
 
   const firstImageClasses = isMydash
-    ? 'w-[42%] h-auto max-h-[42%] bottom-4 left-[16%]' // size reduced by ~7%, moved right 3%
+    ? 'w-[38%] h-auto max-h-[38%] bottom-4 left-[21%]'
     : 'w-[45%] h-auto max-h-[45%] bottom-4 left-[13%]';
 
   const secondImageClasses = isMydash
-    ? 'w-[28%] h-auto top-[42%] right-[27%]' // size increased by 10%, moved left 3%, down 4%
+    ? 'w-[30%] h-auto top-[42%] right-[22%]'
     : 'w-[25%] h-auto top-[8%] right-[44%]';
 
   const secondImageZIndex = isMydash ? 40 : 20;
