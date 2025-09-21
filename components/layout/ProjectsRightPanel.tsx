@@ -51,26 +51,26 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
           <p className="text-base leading-relaxed">{project.description}</p>
         </div>
         <div className="w-full md:w-2/3 min-h-[400px] md:min-h-0 relative">
-          {/* Image Collage Placeholders - Replace these with your <img> tags */}
+          {/* Image Collage Placeholders - Scattered layout */}
           <div
             title="Project image 1"
-            className={`absolute w-[60%] h-[50%] bottom-[10%] left-[5%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[0]}`}
-            style={{ zIndex: 10 }}
+            className={`absolute w-[50%] h-[65%] bottom-[5%] left-[15%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[0]}`}
+            style={{ zIndex: 30 }}
           ><p>Image 1</p></div>
           <div
             title="Project image 2"
-            className={`absolute w-[55%] h-[70%] bottom-0 right-[5%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[1]}`}
-            style={{ zIndex: 20 }}
+            className={`absolute w-[60%] h-[85%] bottom-0 right-0 transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[1]}`}
+            style={{ zIndex: 10 }}
           ><p>Image 2</p></div>
           <div
             title="Project image 3"
-            className={`absolute w-[35%] h-[30%] bottom-0 left-[25%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[2]}`}
-            style={{ zIndex: 30 }}
+            className={`absolute w-[40%] h-[55%] bottom-[25%] left-0 transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[2]}`}
+            style={{ zIndex: 20 }}
           ><p>Image 3</p></div>
            <div
             title="Project image 4"
-            className={`absolute w-[30%] h-[40%] bottom-[35%] right-[2%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[3]}`}
-            style={{ zIndex: 0 }}
+            className={`absolute w-[45%] h-[35%] bottom-0 right-[10%] transform transition-transform duration-300 hover:scale-105 hover:z-40 ${placeholderBase} ${placeholderColors[3]}`}
+            style={{ zIndex: 25 }}
           ><p>Image 4</p></div>
         </div>
       </div>
