@@ -151,8 +151,8 @@ export default function App() {
               ref={projectsImageContainerRef}
               isDarkMode={isDarkMode} 
               selectedProject={selectedProject}
-              relativeCursorPosition={projectsRelativeCursorPosition}
               isHoveringLink={isHoveringLink}
+              relativeCursorPosition={projectsRelativeCursorPosition}
               isScrolling={isScrolling}
               setIsHovering={setIsHoveringProjectsImage}
             />
