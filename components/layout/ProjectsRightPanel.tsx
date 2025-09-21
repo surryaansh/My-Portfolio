@@ -34,45 +34,14 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <span>/03</span>
       </div>
       
-      {/* 
-        This container is now `flex-1` and `relative`, serving as the canvas for the collage.
-        It will fill all available vertical space in its flex-column parent.
-        Padding has been removed from this container to allow images to align to the edges.
-      */}
+      {/* Container for the step-by-step image layout */}
       <div key={project.name} className="flex-1 relative w-full h-full animate-fade-in">
         
-        {/* Image 4 (Tall, Top Right) */}
-        <img
-          src={project.images[3]}
-          alt={`${project.name} screenshot 4`}
-          className={`${imageBaseClasses} w-[35%] h-[90%] top-0 right-0 object-top`}
-          style={{ zIndex: 30 }}
-          aria-hidden="true"
-        />
-
-        {/* Image 2 (Vertical, Top Center) */}
-        <img
-          src={project.images[1]}
-          alt={`${project.name} screenshot 2`}
-          className={`${imageBaseClasses} w-[40%] h-auto max-h-[55%] top-[5%] left-[25%]`}
-          style={{ zIndex: 20 }}
-          aria-hidden="true"
-        />
-
-        {/* Image 3 (Horizontal, Middle Right) */}
-        <img
-          src={project.images[2]}
-          alt={`${project.name} screenshot 3`}
-          className={`${imageBaseClasses} w-[45%] h-auto max-h-[50%] top-[40%] left-[50%]`}
-          style={{ zIndex: 40 }}
-          aria-hidden="true"
-        />
-        
-        {/* Image 1 (Horizontal, Bottom Left) */}
+        {/* Image 1 (barkchain-1.png) - Positioned per user request */}
         <img
           src={project.images[0]}
           alt={`${project.name} screenshot 1`}
-          className={`${imageBaseClasses} w-[55%] h-auto max-h-[50%] bottom-0 left-0`}
+          className={`${imageBaseClasses} w-[45%] h-auto max-h-[45%] bottom-0 left-[40%]`}
           style={{ zIndex: 10 }}
           aria-hidden="true"
         />
