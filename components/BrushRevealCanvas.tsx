@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, memo } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 
 interface BrushRevealCanvasProps {
   imageUrl: string;
@@ -6,149 +6,139 @@ interface BrushRevealCanvasProps {
   isDarkMode: boolean;
 }
 
-type LoadingState = 'loading' | 'ready' | 'error';
-
 const BrushRevealCanvas: React.FC<BrushRevealCanvasProps> = ({
   imageUrl,
   brushUrl,
   isDarkMode,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isPointerDown = useRef(false);
+  // FIX: Initialize useRef with null to fix "Expected 1 arguments, but got 0" error.
   const imageRef = useRef<HTMLImageElement | null>(null);
-  const brushImageRef = useRef<HTMLImageElement | null>(null);
-  const [loadingState, setLoadingState] = useState<LoadingState>('loading');
+  // FIX: Initialize useRef with null to fix "Expected 1 arguments, but got 0" error.
+  const brushRef = useRef<HTMLImageElement | null>(null);
+  // FIX: Initialize useRef with null to fix "Expected 1 arguments, but got 0" error.
+  const animationFrameId = useRef<number | null>(null);
 
-  // 1. Load images and update the component's state accordingly.
-  useEffect(() => {
-    setLoadingState('loading'); // Reset state if props change.
-
-    const imagePromise = new Promise<HTMLImageElement>((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => resolve(img);
-      img.onerror = (e) => reject(new Error(`Failed to load image at ${imageUrl}: ${e}`));
-      img.src = imageUrl;
-    });
-
-    const brushPromise = new Promise<HTMLImageElement>((resolve, reject) => {
-      const brushImg = new Image();
-      brushImg.crossOrigin = "anonymous";
-      brushImg.onload = () => resolve(brushImg);
-      brushImg.onerror = (e) => reject(new Error(`Failed to load brush at ${brushUrl}: ${e}`));
-      brushImg.src = brushUrl;
-    });
-
-    Promise.all([imagePromise, brushPromise])
-      .then(([loadedImage, loadedBrush]) => {
-        imageRef.current = loadedImage;
-        brushImageRef.current = loadedBrush;
-        setLoadingState('ready');
-      })
-      .catch(error => {
-        console.error("BrushRevealCanvas Error:", error);
-        // If either image fails to load, enter the error state for the fallback.
-        setLoadingState('error');
-      });
-  }, [imageUrl, brushUrl]);
-
-  // 2. Setup the canvas and handle resizing once images are ready.
-  useEffect(() => {
-    if (loadingState !== 'ready' || !canvasRef.current) return;
-    
+  // This function sets up the canvas layers: image below, cover color on top.
+  const setupCanvas = useCallback(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
     const image = imageRef.current;
+    if (!canvas || !image || !image.complete) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Match canvas resolution to its display size.
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return; // Don't setup if not visible
     
-    if (!ctx || !image) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
-    const redrawCanvas = () => {
-        const parent = canvas.parentElement;
-        if (!parent) return;
+    // Draw the main image as the base layer.
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-        const { width, height } = parent.getBoundingClientRect();
-        if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = width;
-            canvas.height = height;
-        }
+    // Draw the cover layer (black or off-white) on top.
+    ctx.fillStyle = isDarkMode ? '#000000' : '#efeeee';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, [isDarkMode]);
 
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // First, draw the main image onto the canvas.
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        // Then, draw the solid color overlay that will be "brushed away".
-        ctx.fillStyle = isDarkMode ? '#000000' : '#efeeee';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+  // Effect to load images and setup canvas initially.
+  useEffect(() => {
+    let imageLoaded = false;
+    let brushLoaded = false;
 
-    const resizeObserver = new ResizeObserver(() => {
-        requestAnimationFrame(redrawCanvas);
-    });
-    
-    if (canvas.parentElement) {
-        resizeObserver.observe(canvas.parentElement);
-        redrawCanvas();
-    }
+    const img = new Image();
+    img.src = imageUrl;
+    imageRef.current = img;
 
-    return () => {
-      resizeObserver.disconnect();
+    const brush = new Image();
+    brush.src = brushUrl;
+    brushRef.current = brush;
+
+    const handleLoad = () => {
+      if (imageLoaded && brushLoaded) {
+        // A small delay to ensure layout is stable
+        setTimeout(setupCanvas, 100);
+      }
     };
-  }, [loadingState, isDarkMode]);
-
-  // 3. Handle the "brushing" effect on pointer move.
-  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (loadingState !== 'ready') return;
-
-    const canvas = canvasRef.current;
-    const brush = brushImageRef.current;
-    const ctx = canvas?.getContext('2d');
     
-    if (!canvas || !brush || !ctx) return;
+    img.onload = () => { imageLoaded = true; handleLoad(); };
+    brush.onload = () => { brushLoaded = true; handleLoad(); };
 
-    requestAnimationFrame(() => {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const brushSize = Math.max(canvas.width, canvas.height) / 8;
+    // Reset on resize to handle responsive changes.
+    const debouncedSetup = () => {
+        if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+        animationFrameId.current = requestAnimationFrame(setupCanvas);
+    }
+    window.addEventListener('resize', debouncedSetup);
+    return () => {
+      window.removeEventListener('resize', debouncedSetup);
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+    };
+  }, [imageUrl, brushUrl, setupCanvas]);
 
-        // Use 'destination-out' to erase the top layer, revealing the image underneath.
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.drawImage(brush, x - brushSize / 2, y - brushSize / 2, brushSize, brushSize);
-    });
-  }, [loadingState]);
+  // Effect to handle theme changes. It just re-runs the setup.
+  useEffect(() => {
+    if (canvasRef.current && imageRef.current?.complete) {
+        // Redrawing will reset the reveal progress, which is an acceptable UX for a theme change.
+        setupCanvas();
+    }
+  }, [isDarkMode, setupCanvas]);
 
-  // --- Conditional Rendering ---
+  const draw = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    const brush = brushRef.current;
+    if (!canvas || !brush) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  // Fallback: If images failed to load, render a simple <img> tag.
-  if (loadingState === 'error') {
-    return (
-        <img 
-            src={imageUrl} 
-            alt="Vaporwave hero image" 
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
-    );
-  }
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // A larger brush feels better.
+    const brushSize = Math.max(brush.width, brush.height) * 1.5; 
 
-  // Do not render anything while loading to avoid a flash of unstyled content.
-  if (loadingState === 'loading') {
-    return null; 
-  }
+    // Use 'destination-out' to erase the top layer (cover) and reveal the bottom layer (image).
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.drawImage(brush, x - brushSize / 2, y - brushSize / 2, brushSize, brushSize);
+  }, []);
 
-  // Success: Render the interactive canvas.
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    // Set the capture to ensure pointerup/leave events are fired even if the cursor leaves the element.
+    e.currentTarget.setPointerCapture(e.pointerId);
+    isPointerDown.current = true;
+    draw(e);
+  };
+  
+  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    isPointerDown.current = false;
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (isPointerDown.current) {
+      draw(e);
+    }
+  };
+
   return (
     <canvas
       ref={canvasRef}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
       onPointerMove={handlePointerMove}
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'block',
-        touchAction: 'none',
-        cursor: 'none',
+      style={{ 
+        width: '100%', 
+        height: '100%', 
+        touchAction: 'none', // Important for pointer events on touch devices
+        cursor: 'none' // The cursor is handled by the parent
       }}
     />
   );
 };
 
-export default memo(BrushRevealCanvas);
+export default BrushRevealCanvas;
