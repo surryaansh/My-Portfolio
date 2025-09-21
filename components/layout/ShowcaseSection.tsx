@@ -25,12 +25,13 @@ export const ShowcaseSection: React.FC<ShowcaseSectionProps> = ({ isDarkMode }) 
   const handleGenerate = async () => {
     setLoading(true);
     setError(null);
-    setImages([]);
+    setImages([]); // Reset images for a new generation sequence
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
-      const imagePromises = prompts.map(prompt => 
-        ai.models.generateImages({
+      const currentGenerated: string[] = [];
+
+      for (const prompt of prompts) {
+        const response = await ai.models.generateImages({
           model: 'imagen-4.0-generate-001',
           prompt: prompt,
           config: {
@@ -38,25 +39,24 @@ export const ShowcaseSection: React.FC<ShowcaseSectionProps> = ({ isDarkMode }) 
             outputMimeType: 'image/png',
             aspectRatio: '16:9',
           },
-        })
-      );
-      
-      const responses = await Promise.all(imagePromises);
-      
-      const generatedImages = responses.map(response => {
+        });
+        
         const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
-        return `data:image/png;base64,${base64ImageBytes}`;
-      });
-
-      setImages(generatedImages);
-
+        currentGenerated.push(`data:image/png;base64,${base64ImageBytes}`);
+        
+        // Update state progressively as each image is generated
+        setImages([...currentGenerated]);
+      }
     } catch (e) {
       console.error(e);
-      setError('Failed to generate showcase images. Please try again later.');
+      const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
+      setError(`Failed to generate images. ${errorMessage}`);
     } finally {
       setLoading(false);
     }
   };
+  
+  const imagePlaceholders = Array(3).fill(null);
 
   return (
     <section id="showcase" className={`border-t ${borderClasses} py-8`}>
@@ -75,24 +75,23 @@ export const ShowcaseSection: React.FC<ShowcaseSectionProps> = ({ isDarkMode }) 
           {loading ? 'Generating...' : 'Generate Showcase'}
         </button>
 
-        {loading && (
-          <div className="mt-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-current"></div>
-            <p className={`mt-4 ${grayTextClasses}`}>Generating unique visuals... this may take a moment.</p>
-          </div>
-        )}
-
         {error && <p className="mt-8 text-red-500">{error}</p>}
 
-        {images.length > 0 && (
+        {(loading || images.length > 0) && (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-            {images.map((src, index) => (
-              <div key={index} className={`border ${borderClasses} p-2 rounded-lg`}>
-                <img 
-                  src={src} 
-                  alt={`AI generated showcase image ${index + 1}`} 
-                  className="w-full h-auto object-cover rounded"
-                />
+            {imagePlaceholders.map((_, index) => (
+              <div key={index} className={`border ${borderClasses} p-2 rounded-lg aspect-[16/9] flex items-center justify-center ${images[index] ? '' : 'bg-gray-500/10'}`}>
+                {images[index] ? (
+                  <img 
+                    src={images[index]} 
+                    alt={`AI generated showcase image ${index + 1}`} 
+                    className="w-full h-full object-cover rounded"
+                  />
+                ) : (
+                  loading && (
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-current"></div>
+                  )
+                )}
               </div>
             ))}
           </div>
