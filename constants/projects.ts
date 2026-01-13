@@ -1,7 +1,7 @@
 // constants/projects.ts
 
 /**
- * Defines the data for each project.
+ * Defines the data for each project, including specific layout classes for the images.
  */
 export const PROJECTS_DATA = [
   {
@@ -14,7 +14,13 @@ export const PROJECTS_DATA = [
       '/barkchain-3.png',
       '/barkchain-4.png',
     ],
-    link: "#" // Placeholder
+    layout: {
+      img1: "w-[45%] h-auto max-h-[45%] bottom-4 left-[13%] z-[10]",
+      img2: "w-[25%] h-auto top-[8%] right-[44%] z-[20]",
+      img3: "w-[22.5%] h-auto bottom-[18%] right-[24%] z-[30]",
+      img4: "h-[92%] w-auto bottom-4 right-0 z-[25]"
+    },
+    link: "#"
   },
   {
     name: "MYDASH",
@@ -25,7 +31,13 @@ export const PROJECTS_DATA = [
       '/mydash-2.png',
       '/mydash-4.png',
     ],
-    link: "#" // Placeholder
+    layout: {
+      img1: "w-[38%] h-auto max-h-[38%] bottom-4 left-[21%] z-[10]",
+      img2: "w-[30%] h-auto top-[42%] right-[22%] z-[40]",
+      img3: "", // Not used as this project has 3 images
+      img4: "h-[92%] w-auto bottom-4 right-0 z-[25]"
+    },
+    link: "#"
   },
   {
     name: "SURU GPT",
@@ -37,7 +49,13 @@ export const PROJECTS_DATA = [
       '/surugpt-3.png',
       '/surugpt-4.png',
     ],
-    link: "#" // Placeholder
+    layout: {
+      img1: "w-[45%] h-auto max-h-[45%] bottom-4 left-[13%] z-[10]",
+      img2: "w-[25%] h-auto top-[8%] right-[44%] z-[20]",
+      img3: "w-[22.5%] h-auto bottom-[12%] right-[28%] z-[30]",
+      img4: "h-[92%] w-auto bottom-4 right-0 z-[25]"
+    },
+    link: "#"
   },
 ];
 
