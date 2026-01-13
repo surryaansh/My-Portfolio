@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF--8" />
+    <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Suryansh</title>
+    <title>Suryansh | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,26 +15,22 @@
       }
       body {
         font-family: 'Inter', sans-serif;
-        -webkit-user-select: none; /* Safari */
-        -moz-user-select: none;    /* Firefox */
-        -ms-user-select: none;     /* IE10+/Edge */
-        user-select: none;         /* Standard */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
-      /* 
-        This rule ensures the custom cursor is used consistently. 
-        !important is used here deliberately to override default browser styles 
-        and any potential specificity conflicts on interactive elements.
-      */
+      
       a, button {
         cursor: none !important;
       }
-      /* Utility to hide scrollbars for a cleaner look */
+
       .no-scrollbar::-webkit-scrollbar {
         display: none;
       }
       .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
@@ -47,10 +43,13 @@
   <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
-    "react": "https://aistudiocdn.com/react@^19.1.1",
-    "react/": "https://aistudiocdn.com/react@^19.1.1/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0"
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
+    "react": "https://esm.sh/react@19.0.0",
+    "react/": "https://esm.sh/react@19.0.0/",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@5.1.2",
+    "path": "https://esm.sh/path-browserify@1.0.1",
+    "vite": "https://esm.sh/vite@6.2.0"
   }
 }
 </script>
