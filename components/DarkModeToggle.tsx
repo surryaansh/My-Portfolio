@@ -15,7 +15,7 @@ export const DarkModeToggle: React.FC<DarkModeToggleProps> = ({ isDarkMode, togg
       className={`group relative inline-flex items-center h-7 w-14 rounded-full transition-colors duration-300 focus:outline-none ${
         isDarkMode 
           ? 'bg-gray-700' 
-          : 'bg-gray-200 hover:bg-gray-300'
+          : 'bg-gray-300 hover:bg-gray-400'
       }`}
     >
       {/* Moon icon is on the left, visible in dark mode */}
