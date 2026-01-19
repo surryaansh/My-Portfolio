@@ -52,7 +52,7 @@ export const SKILLS = [
   { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
   { 
     component: GitSkillIcon, 
-    transform: 'transform translate-y-[2%]', 
+    transform: 'transform translate-y-[2%] opacity-80', 
     size: 'w-[4.374rem] md:w-[5.103rem]',
     margin: 'mr-[2.85rem] sm:mr-[3.95rem] md:mr-[5.6rem]'
   },
