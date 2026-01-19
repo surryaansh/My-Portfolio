@@ -49,24 +49,30 @@ export const SKILLS = [
     margin: 'mr-8 sm:mr-10 md:mr-12'
   },
   { component: SoliditySkillIcon, transform: 'transform -translate-y-px' },
-  { component: MetamaskSkillIcon, transform: 'transform -translate-y-px', size: 'w-40 md:w-[10rem]' },
+  { 
+    component: MetamaskSkillIcon, 
+    transform: 'transform -translate-y-px', 
+    size: 'w-40 md:w-[10rem]',
+    // Default was mr-10 (2.5rem), sm:mr-14 (3.5rem), md:mr-20 (5rem). Increased by 3%.
+    margin: 'mr-[2.575rem] sm:mr-[3.605rem] md:mr-[5.15rem]'
+  },
   { 
     component: GitSkillIcon, 
     transform: 'transform translate-y-[2%] opacity-80', 
     size: 'w-[4.374rem] md:w-[5.103rem]',
-    margin: 'mr-[2.85rem] sm:mr-[3.95rem] md:mr-[5.6rem]'
+    // Increased previous margin by 3%
+    margin: 'mr-[2.936rem] sm:mr-[4.069rem] md:mr-[5.768rem]'
   },
   { 
     component: AwsSkillIcon, 
-    // Shifted downwards 3% more and reduced size by 5%
     transform: 'transform translate-y-[4%]', 
     size: 'w-[3.42rem] md:w-[4.275rem]',
-    margin: 'mr-[2.9rem] sm:mr-[4.1rem] md:mr-[5.8rem]'
+    // Increased previous margin by 3%
+    margin: 'mr-[2.987rem] sm:mr-[4.223rem] md:mr-[5.974rem]'
   },
   { 
     component: DockerSkillIcon, 
     transform: 'transform translate-y-[1%]', 
-    // Reduced size by 10%
     size: 'w-[7.2rem] md:w-[9rem]',
     margin: 'mr-[3.1rem] sm:mr-[4.3rem] md:mr-[6.1rem]'
   },
