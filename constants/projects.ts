@@ -27,10 +27,11 @@ export const PROJECTS_DATA = [
     description: "MyDash is a comprehensive dashboard application for managing personal projects and productivity, featuring a clean UI and powerful integrations.",
     keywords: ["PRODUCTIVITY", "FRONTEND DEV", "DATA VISUALIZATION"],
     images: [
+      '/mydash-2.png',
       '/mydash-4.png',
     ],
     layout: {
-      img1: "", // Set to empty to remove the "preview 1" slot entirely
+      img1: "w-[38%] h-auto max-h-[38%] bottom-4 left-[21%] z-[10]",
       img2: "", 
       img3: "", 
       img4: "h-[92%] w-auto bottom-4 right-0 z-[25]"
