@@ -11,6 +11,7 @@ import { EthereumSkillIcon } from '../components/icons/skills/EthereumSkillIcon.
 import { SoliditySkillIcon } from '../components/icons/skills/SoliditySkillIcon.tsx';
 import { MetamaskSkillIcon } from '../components/icons/skills/MetamaskSkillIcon.tsx';
 import { GitSkillIcon } from '../components/icons/skills/GitSkillIcon.tsx';
+import { AwsSkillIcon } from '../components/icons/skills/AwsSkillIcon.tsx';
 import { PythonSkillIcon } from '../components/icons/skills/PythonSkillIcon.tsx';
 import { TypescriptSkillIcon } from '../components/icons/skills/TypescriptSkillIcon.tsx';
 import { NextJsSkillIcon } from '../components/icons/skills/NextJsSkillIcon.tsx';
@@ -55,6 +56,12 @@ export const SKILLS = [
     transform: 'transform translate-y-[2%] opacity-80', 
     size: 'w-[4.374rem] md:w-[5.103rem]',
     margin: 'mr-[2.85rem] sm:mr-[3.95rem] md:mr-[5.6rem]'
+  },
+  { 
+    component: AwsSkillIcon, 
+    transform: 'transform translate-y-[1%]', 
+    size: 'w-24 md:w-[7.5rem]',
+    margin: 'mr-[3.1rem] sm:mr-[4.3rem] md:mr-[6.1rem]'
   },
   { 
     component: PythonSkillIcon, 
