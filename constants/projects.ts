@@ -2,8 +2,6 @@
 
 /**
  * Defines the data for each project, including specific layout classes for the images.
- * Using percentage-based widths and positions ensures the collage scales uniformly
- * regardless of the container's aspect ratio.
  */
 export const PROJECTS_DATA = [
   {
@@ -17,10 +15,10 @@ export const PROJECTS_DATA = [
       '/barkchain-4.png',
     ],
     layout: {
-      img1: "w-[45%] h-auto bottom-[5%] left-[10%] z-[10]",
-      img2: "w-[25%] h-auto top-[8%] right-[42%] z-[20]",
-      img3: "w-[22.5%] h-auto bottom-[18%] right-[20%] z-[30]",
-      img4: "w-[60%] h-auto bottom-[5%] right-0 z-[25]"
+      img1: "w-[45%] h-auto max-h-[45%] bottom-4 left-[13%] z-[10]",
+      img2: "w-[25%] h-auto top-[8%] right-[44%] z-[20]",
+      img3: "w-[22.5%] h-auto bottom-[18%] right-[22%] z-[30]",
+      img4: "h-[92%] w-auto bottom-4 right-0 z-[25]"
     },
     link: "#"
   },
@@ -33,10 +31,10 @@ export const PROJECTS_DATA = [
       '/mydash-4.png',
     ],
     layout: {
-      img1: "w-[27.225%] h-auto bottom-[8.875%] right-[24.875%] z-[30]",
+      img1: "w-[24.75%] h-auto bottom-[10.875%] right-[26.875%] z-[30]",
       img2: "", 
       img3: "", 
-      img4: "w-[60%] h-auto bottom-[5%] right-0 z-[25]"
+      img4: "h-[92%] w-auto bottom-4 right-0 z-[25]"
     },
     link: "#"
   },
@@ -51,10 +49,10 @@ export const PROJECTS_DATA = [
       '/surugpt-4.png',
     ],
     layout: {
-      img1: "w-[45%] h-auto bottom-[5%] left-[10%] z-[10]",
-      img2: "w-[25%] h-auto top-[8%] right-[42%] z-[20]",
-      img3: "w-[22.5%] h-auto bottom-[12%] right-[25%] z-[30]",
-      img4: "w-[60%] h-auto bottom-[5%] right-0 z-[25]"
+      img1: "w-[45%] h-auto max-h-[45%] bottom-4 left-[13%] z-[10]",
+      img2: "w-[25%] h-auto top-[8%] right-[44%] z-[20]",
+      img3: "w-[22.5%] h-auto bottom-[12%] right-[28%] z-[30]",
+      img4: "h-[92%] w-auto bottom-4 right-0 z-[25]"
     },
     link: "#"
   },

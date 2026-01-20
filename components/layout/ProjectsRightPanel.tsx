@@ -9,11 +9,8 @@ interface ProjectsRightPanelProps {
 export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMode, selectedProject }) => {
   const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
   
-  /**
-   * Base classes for the images themselves.
-   * Subtle scale and shadow to provide a professional "pop" without being overwhelming.
-   */
-  const imageClasses = `w-full h-full object-cover border-[0.5px] border-black transition-all duration-300 ease-out hover:scale-[1.025] hover:shadow-lg`;
+  // Base classes for the images. Transitions are now controlled dynamically per-state.
+  const imageBaseClasses = `absolute object-cover border-[0.5px] border-black transition-all hover:scale-[1.02]`;
 
   return (
     <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
@@ -28,10 +25,11 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
           const { layout } = project;
 
           /**
-           * Handles the container's entrance/exit transition.
-           * Staggered delays apply only to the entrance of the layout.
+           * Generates animation classes for each image based on its index and selection state.
+           * Entering: Staggered entrance, longer duration for smoothness.
+           * Exiting: Instant/fast exit with no delay to prevent overlapping with the new project.
            */
-          const getContainerAnimClasses = (index: number) => {
+          const getAnimClasses = (index: number) => {
             const staggeredDelays = ['delay-[0ms]', 'delay-[100ms]', 'delay-[200ms]', 'delay-[300ms]'];
             
             if (isSelected) {
@@ -46,52 +44,44 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
               key={project.name} 
               className={`absolute inset-0 w-full h-full ${isSelected ? 'z-10' : 'z-0'}`}
             >
-              {/* Image 1 Container */}
+              {/* Image 1 */}
               {layout.img1 && project.images[0] && (
-                <div className={`absolute transition-all ${layout.img1} ${getContainerAnimClasses(0)}`}>
-                  <img
-                    src={project.images[0]}
-                    alt={`${project.name} preview 1`}
-                    className={imageClasses}
-                    aria-hidden="true"
-                  />
-                </div>
+                <img
+                  src={project.images[0]}
+                  alt={`${project.name} preview 1`}
+                  className={`${imageBaseClasses} ${layout.img1} ${getAnimClasses(0)}`}
+                  aria-hidden="true"
+                />
               )}
 
-              {/* Image 2 Container */}
+              {/* Image 2 */}
               {layout.img2 && project.images[1] && (
-                <div className={`absolute transition-all ${layout.img2} ${getContainerAnimClasses(1)}`}>
-                  <img
-                    src={project.images[1]}
-                    alt={`${project.name} preview 2`}
-                    className={imageClasses}
-                    aria-hidden="true"
-                  />
-                </div>
+                <img
+                  src={project.images[1]}
+                  alt={`${project.name} preview 2`}
+                  className={`${imageBaseClasses} ${layout.img2} ${getAnimClasses(1)}`}
+                  aria-hidden="true"
+                />
               )}
 
-              {/* Image 3 Container */}
+              {/* Image 3 */}
               {layout.img3 && project.images[2] && (
-                <div className={`absolute transition-all ${layout.img3} ${getContainerAnimClasses(2)}`}>
-                  <img
-                    src={project.images[2]}
-                    alt={`${project.name} preview 3`}
-                    className={imageClasses}
-                    aria-hidden="true"
-                  />
-                </div>
+                <img
+                  src={project.images[2]}
+                  alt={`${project.name} preview 3`}
+                  className={`${imageBaseClasses} ${layout.img3} ${getAnimClasses(2)}`}
+                  aria-hidden="true"
+                />
               )}
 
-              {/* Highlight Image Container (img4) */}
+              {/* Highlight Image (The last/main image in the sequence) */}
               {layout.img4 && project.images.length > 0 && (
-                <div className={`absolute transition-all ${layout.img4} ${getContainerAnimClasses(3)}`}>
-                  <img
-                    src={project.images[project.images.length - 1]}
-                    alt={`${project.name} main showcase`}
-                    className={imageClasses}
-                    aria-hidden="true"
-                  />
-                </div>
+                <img
+                  src={project.images[project.images.length - 1]}
+                  alt={`${project.name} main showcase`}
+                  className={`${imageBaseClasses} ${layout.img4} ${getAnimClasses(3)}`}
+                  aria-hidden="true"
+                />
               )}
             </div>
           );
