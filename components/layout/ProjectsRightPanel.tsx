@@ -11,9 +11,9 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
   
   /**
    * Base classes for the images themselves.
-   * Handles immediate interaction (scale, shadow) without delay.
+   * Subtle scale and shadow to provide a professional "pop" without being overwhelming.
    */
-  const imageClasses = `w-full h-full object-cover border-[0.5px] border-black transition-transform duration-300 ease-out hover:scale-[1.05] hover:shadow-2xl`;
+  const imageClasses = `w-full h-full object-cover border-[0.5px] border-black transition-all duration-300 ease-out hover:scale-[1.025] hover:shadow-lg`;
 
   return (
     <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
@@ -29,7 +29,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
 
           /**
            * Handles the container's entrance/exit transition.
-           * Decoupled from the image hover to prevent delay on interactions.
+           * Staggered delays apply only to the entrance of the layout.
            */
           const getContainerAnimClasses = (index: number) => {
             const staggeredDelays = ['delay-[0ms]', 'delay-[100ms]', 'delay-[200ms]', 'delay-[300ms]'];
@@ -48,7 +48,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
             >
               {/* Image 1 Container */}
               {layout.img1 && project.images[0] && (
-                <div className={`absolute transition-all ${layout.img1} ${getContainerAnimClasses(0)} hover:z-50`}>
+                <div className={`absolute transition-all ${layout.img1} ${getContainerAnimClasses(0)}`}>
                   <img
                     src={project.images[0]}
                     alt={`${project.name} preview 1`}
@@ -60,7 +60,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
 
               {/* Image 2 Container */}
               {layout.img2 && project.images[1] && (
-                <div className={`absolute transition-all ${layout.img2} ${getContainerAnimClasses(1)} hover:z-50`}>
+                <div className={`absolute transition-all ${layout.img2} ${getContainerAnimClasses(1)}`}>
                   <img
                     src={project.images[1]}
                     alt={`${project.name} preview 2`}
@@ -72,7 +72,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
 
               {/* Image 3 Container */}
               {layout.img3 && project.images[2] && (
-                <div className={`absolute transition-all ${layout.img3} ${getContainerAnimClasses(2)} hover:z-50`}>
+                <div className={`absolute transition-all ${layout.img3} ${getContainerAnimClasses(2)}`}>
                   <img
                     src={project.images[2]}
                     alt={`${project.name} preview 3`}
@@ -82,9 +82,9 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
                 </div>
               )}
 
-              {/* Highlight Image Container */}
+              {/* Highlight Image Container (img4) */}
               {layout.img4 && project.images.length > 0 && (
-                <div className={`absolute transition-all ${layout.img4} ${getContainerAnimClasses(3)} hover:z-50`}>
+                <div className={`absolute transition-all ${layout.img4} ${getContainerAnimClasses(3)}`}>
                   <img
                     src={project.images[project.images.length - 1]}
                     alt={`${project.name} main showcase`}
