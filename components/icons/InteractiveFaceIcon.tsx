@@ -9,8 +9,8 @@ interface InteractiveFaceIconProps {
 }
 
 /**
- * An interactive SVG face icon where the eyes and eyebrows follow the cursor's movement.
- * Optimized for a single-flow physical movement between tracking and converged states.
+ * An interactive SVG face icon.
+ * Features cross-fading eyebrows and pupils that pull inward/downward on hover.
  */
 export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursorPosition, isDarkMode, isConnectHovered = false }) => {
   const faceRef = useRef<SVGSVGElement>(null);
@@ -76,84 +76,58 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const maxTravelY = 30;
     const sensitivity = 0.42; 
 
-    const dx = ((cursorPosition.x - face.x) * sensitivity) / scale.x;
-    const dy = ((cursorPosition.y - face.y) * sensitivity) / scale.y;
+    // Calculate raw tracking
+    const rawDx = ((cursorPosition.x - face.x) * sensitivity) / scale.x;
+    const rawDy = ((cursorPosition.y - face.y) * sensitivity) / scale.y;
 
-    let finalDx = dx;
-    let finalDy = dy;
-    const ellipseRatio = (dx / maxTravelX) ** 2 + (dy / maxTravelY) ** 2;
-    if (ellipseRatio > 1) {
-      const scaleFactor = 1 / Math.sqrt(ellipseRatio);
-      finalDx *= scaleFactor;
-      finalDy *= scaleFactor;
-    }
-
-    return {
-      left: { dx: finalDx, dy: finalDy },
-      right: { dx: finalDx, dy: finalDy }
+    const limit = (x: number, y: number) => {
+      let tx = x;
+      let ty = y;
+      const ratio = (tx / maxTravelX) ** 2 + (ty / maxTravelY) ** 2;
+      if (ratio > 1) {
+        const factor = 1 / Math.sqrt(ratio);
+        tx *= factor;
+        ty *= factor;
+      }
+      return { dx: tx, dy: ty };
     };
+
+    // Apply the "Flinch Pull": Closer to center and slightly downwards
+    const pullX = 25;
+    const pullY = 15;
+
+    const leftBase = limit(rawDx + (isConnectHovered ? pullX : 0), rawDy + (isConnectHovered ? pullY : 0));
+    const rightBase = limit(rawDx - (isConnectHovered ? pullX : 0), rawDy + (isConnectHovered ? pullY : 0));
+
+    return { left: leftBase, right: rightBase };
   };
 
-  /**
-   * Unified eyebrow logic that glides between cursor tracking and fixed converged state.
-   */
-  const getEyebrowTransforms = () => {
+  const getEyebrowTracking = () => {
     const { face } = elementPositions;
-    if (face.width === 0 || face.x === 0) {
-      return { left: { dx: 0, dy: 0, angle: 0 }, right: { dx: 0, dy: 0, angle: 0 } };
-    }
+    if (face.width === 0 || face.x === 0) return { left: '', right: '' };
 
-    // Dynamic mouse factor (-1 to 1)
     const dx = cursorPosition.x - face.x;
     const dy = cursorPosition.y - face.y;
     const xFactor = Math.max(-1, Math.min(1, dx / (face.width / 2)));
     const yFactor = Math.max(-1, Math.min(1, dy / (face.height / 1.5)));
 
-    // Tracking state targets (relative to path start)
-    let leftTarget = {
-      dx: xFactor * 15,
-      dy: yFactor * 15,
-      angle: xFactor * 8
+    const l_dx = xFactor * 15;
+    const l_dy = yFactor * 15;
+    const l_angle = xFactor * 8;
+
+    return {
+      left: `translate(${l_dx}, ${l_dy}) rotate(${l_angle}, 286, 238)`,
+      right: `translate(${l_dx}, ${l_dy}) rotate(${l_angle}, 574, 239)`
     };
-
-    let rightTarget = {
-      dx: xFactor * 15,
-      dy: yFactor * 15,
-      angle: xFactor * 8
-    };
-
-    // Converge state targets (Relative inward glide)
-    if (isConnectHovered) {
-      leftTarget = {
-        dx: 25,       // Glide inward
-        dy: -15,      // Lift slightly
-        angle: 18     // Concentrated inward tilt
-      };
-      
-      rightTarget = {
-        dx: -25,      // Glide inward
-        dy: -15,      // Lift slightly
-        angle: -18    // Concentrated inward tilt
-      };
-    }
-
-    return { left: leftTarget, right: rightTarget };
-  }
+  };
 
   const pupils = getPupilTransforms();
-  const { left: leftEB, right: rightEB } = getEyebrowTransforms();
+  const trackingEB = getEyebrowTracking();
   const eyeWhiteColor = isDarkMode ? '#000000' : '#EEEEEE';
 
-  // Fixed pivot points for standard SVG group rotation
-  const EB_L_CX = 286;
-  const EB_L_CY = 238;
-  const EB_R_CX = 574;
-  const EB_R_CY = 239;
-
-  // Dynamic timing: Fast for tracking, slow glide for state change
-  const transitionStyle = {
-    willChange: 'transform',
-    transition: `transform ${isConnectHovered ? '0.6s' : '0.12s'} cubic-bezier(0.34, 1.56, 0.64, 1)`
+  const fadeTransition = {
+    transition: 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    willChange: 'opacity, transform'
   };
 
   return (
@@ -170,15 +144,26 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       {/* Left Eye */}
       <path d="M197 457.91C122.881 463.524 70.2463 480.789 69.4998 421.41C68.7534 362.031 166.773 307.424 238.5 315.91C297.973 322.946 356.5 355.91 347.5 428.41C341.052 480.354 271.118 452.296 197 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#leftEyeClip)">
-        <g transform={`translate(${pupils.left.dx}, ${pupils.left.dy})`}>
+        <g 
+          transform={`translate(${pupils.left.dx}, ${pupils.left.dy})`}
+          style={{ transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
+        >
           <ellipse cx="213" cy="395" rx="55" ry="45" fill="currentColor"/>
         </g>
       </g>
       
-      {/* Left Eyebrow - Single consistent group for glide effect */}
+      {/* Left Eyebrow - Tracking Layer */}
       <g 
-        transform={`translate(${leftEB.dx}, ${leftEB.dy}) rotate(${leftEB.angle}, ${EB_L_CX}, ${EB_L_CY})`}
-        style={transitionStyle}
+        transform={trackingEB.left} 
+        style={{ ...fadeTransition, opacity: isConnectHovered ? 0 : 1 }}
+      >
+        <path d="M371.513 318.177L358.587 329.736C350.61 336.869 338.44 336.494 330.918 328.883L200.698 197.134C192.798 189.141 192.994 176.221 201.134 168.472L223.07 147.588C231.394 139.662 244.659 140.327 252.149 149.045L373.359 290.12C380.486 298.415 379.665 310.887 371.513 318.177Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(-40, 10) rotate(-25, 286, 238)"></path>
+      </g>
+      
+      {/* Left Eyebrow - Flinched Layer */}
+      <g 
+        transform="translate(-15, -5) rotate(-10, 286, 238)"
+        style={{ ...fadeTransition, opacity: isConnectHovered ? 1 : 0 }}
       >
         <path d="M371.513 318.177L358.587 329.736C350.61 336.869 338.44 336.494 330.918 328.883L200.698 197.134C192.798 189.141 192.994 176.221 201.134 168.472L223.07 147.588C231.394 139.662 244.659 140.327 252.149 149.045L373.359 290.12C380.486 298.415 379.665 310.887 371.513 318.177Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(-40, 10) rotate(-25, 286, 238)"></path>
       </g>
@@ -186,20 +171,31 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       {/* Right Eye */}
       <path d="M650.904 457.91C576.786 463.524 524.151 480.789 523.404 421.41C522.658 362.031 620.677 307.424 692.404 315.91C751.877 322.946 810.404 355.91 801.404 428.41C794.956 480.354 725.023 452.296 650.904 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#rightEyeClip)">
-        <g transform={`translate(${pupils.right.dx}, ${pupils.right.dy})`}>
+        <g 
+          transform={`translate(${pupils.right.dx}, ${pupils.right.dy})`}
+          style={{ transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }}
+        >
           <ellipse cx="667" cy="395" rx="55" ry="45" fill="currentColor"/>
         </g>
       </g>
       
-      {/* Right Eyebrow - Single consistent group for glide effect */}
+      {/* Right Eyebrow - Tracking Layer */}
       <g 
-        transform={`translate(${rightEB.dx}, ${rightEB.dy}) rotate(${rightEB.angle}, ${EB_R_CX}, ${EB_R_CY})`}
-        style={transitionStyle}
+        transform={trackingEB.right}
+        style={{ ...fadeTransition, opacity: isConnectHovered ? 0 : 1 }}
+      >
+        <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(100, 0) rotate(30, 574, 239)"></path>
+      </g>
+
+      {/* Right Eyebrow - Flinched Layer */}
+      <g 
+        transform="translate(15, -5) rotate(10, 574, 239)"
+        style={{ ...fadeTransition, opacity: isConnectHovered ? 1 : 0 }}
       >
         <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(100, 0) rotate(30, 574, 239)"></path>
       </g>
       
-      {/* Mouth Component - Dual path morphing via stroke-dash */}
+      {/* Mouth Component */}
       <g className="mouth-group">
         <path 
           transform="scale(1.43) translate(-4, -3)" 
