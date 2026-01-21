@@ -1,19 +1,19 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 
 interface InteractiveFaceIconProps {
-  /** The global mouse position provided by the parent component. */
+  /** The global document-relative mouse position provided by the parent component. */
   cursorPosition: { x: number; y: number };
   isDarkMode: boolean;
 }
 
 /**
- * An interactive SVG face icon where the eyes and eyebrows follow the cursor's movement,
- * creating an expressive and engaging UI element.
+ * An interactive SVG face icon where the eyes and eyebrows follow the cursor's movement.
+ * Uses document-relative coordinates to remain accurate across long scrolling pages.
  */
 export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursorPosition, isDarkMode }) => {
   const faceRef = useRef<SVGSVGElement>(null);
 
-  // State to store the calculated positions and scale of the SVG elements on the screen.
   const [elementPositions, setElementPositions] = useState({
     face: { x: 0, y: 0, width: 0, height: 0 },
     leftEye: { x: 0, y: 0 },
@@ -21,8 +21,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     scale: { x: 1, y: 1 },
   });
 
-  // Effect to calculate and update the screen coordinates of the face and eyes.
-  // This runs on mount and recalculates on window resize to handle responsiveness.
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -30,87 +28,82 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       if (!faceRef.current) return;
       
       const faceRect = faceRef.current.getBoundingClientRect();
-      // If the component isn't rendered yet, the width will be 0. We avoid calculation in this case.
       if (faceRect.width === 0) return; 
 
-      // The original SVG viewBox dimensions. Used to calculate scaling factor.
+      // Absolute document coordinates by adding scroll offsets
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+      
+      const docTop = faceRect.top + scrollY;
+      const docLeft = faceRect.left + scrollX;
+
       const viewBox = { x: 67, y: 105, width: 745, height: 364 };
       const scaleX = faceRect.width / viewBox.width;
       const scaleY = faceRect.height / viewBox.height;
 
-      // Helper function to convert internal SVG coordinates to absolute screen coordinates.
-      const getScreenCoords = (svgX: number, svgY: number) => ({
-        x: faceRect.left + (svgX - viewBox.x) * scaleX,
-        y: faceRect.top + (svgY - viewBox.y) * scaleY,
+      const getDocCoords = (svgX: number, svgY: number) => ({
+        x: docLeft + (svgX - viewBox.x) * scaleX,
+        y: docTop + (svgY - viewBox.y) * scaleY,
       });
 
       setElementPositions({
         face: { 
-          x: faceRect.left + faceRect.width / 2, 
-          y: faceRect.top + faceRect.height / 2, 
+          x: docLeft + faceRect.width / 2, 
+          y: docTop + faceRect.height / 2, 
           width: faceRect.width, 
           height: faceRect.height 
         },
-        // These are the original coordinates of the eye centers within the SVG viewBox.
-        leftEye: getScreenCoords(213, 395),
-        rightEye: getScreenCoords(667, 395),
+        leftEye: getDocCoords(213, 395),
+        rightEye: getDocCoords(667, 395),
         scale: { x: scaleX, y: scaleY },
       });
     };
     
-    // Debounce the resize handler to avoid performance issues.
-    const handleResize = () => {
+    const handleEvents = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(calculatePositions, 100);
+      timeoutId = setTimeout(calculatePositions, 50);
     };
 
     calculatePositions();
-    // Also run a delayed calculation to catch layout shifts after initial render.
-    const initialCalculationTimer = setTimeout(calculatePositions, 500);
-
-    window.addEventListener('resize', handleResize);
     
+    window.addEventListener('resize', handleEvents);
+    window.addEventListener('scroll', handleEvents);
+    
+    // Catch-all for dynamic layout shifts
+    const timer = setTimeout(calculatePositions, 500);
+
     return () => {
       clearTimeout(timeoutId);
-      clearTimeout(initialCalculationTimer);
-      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleEvents);
+      window.removeEventListener('scroll', handleEvents);
     };
   }, []);
 
-  /**
-   * Calculates the pupil's transform (dx, dy) based on the cursor position relative to an eye's center.
-   * @param eyeCenter - The absolute screen coordinates of the eye's center.
-   * @returns The calculated dx and dy translation for the pupil in SVG units.
-   */
   const getPupilTransform = (eyeCenter: { x: number; y: number }) => {
     const { scale } = elementPositions;
     if (!eyeCenter.x || !eyeCenter.y || scale.x === 0 || scale.y === 0) {
       return { dx: 0, dy: 0 };
     }
     
-    // Maximum travel distance for the pupil in SVG units.
     const maxTravelX = 60;
     const maxTravelY = 30;
-    const sensitivity = 0.4; // How strongly the pupil reacts to cursor movement.
+    const sensitivity = 0.4;
 
-    // 1. Calculate displacement in screen pixels.
     const dx_pixels_raw = cursorPosition.x - eyeCenter.x;
     const dy_pixels_raw = cursorPosition.y - eyeCenter.y;
     
     let dx_pixels = dx_pixels_raw * sensitivity;
     let dy_pixels = dy_pixels_raw * sensitivity;
 
-    // When cursor is to the right of the eye, exaggerate horizontal movement and add a slight downward shift.
     if (dx_pixels_raw > 0) {
-      dx_pixels *= 1.8; // Increased horizontal shift
-      dy_pixels += dx_pixels_raw * 0.05; // Add vertical shift
+      dx_pixels *= 1.8;
+      dy_pixels += dx_pixels_raw * 0.05;
     }
     
-    // 2. Convert pixel displacement to SVG coordinate units using the calculated scale.
     let dx = dx_pixels / scale.x;
     let dy = dy_pixels / scale.y;
 
-    // 3. Constrain the movement to an elliptical path that matches the eye shape.
     const ellipseRatio = (dx / maxTravelX) ** 2 + (dy / maxTravelY) ** 2;
 
     if (ellipseRatio > 1) {
@@ -122,10 +115,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     return { dx, dy };
   };
 
-  /**
-   * Calculates the eyebrow transforms (rotation, translation) based on cursor position relative to the face.
-   * @returns An object containing the transform properties for both left and right eyebrows.
-   */
   const getEyebrowTransforms = () => {
     const { face } = elementPositions;
     if (face.width === 0 || face.x === 0) {
@@ -135,11 +124,9 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const dx = cursorPosition.x - face.x;
     const dy = cursorPosition.y - face.y;
     
-    // Normalize cursor position from -1 to 1 relative to the face dimensions.
     const xFactor = Math.max(-1, Math.min(1, dx / (face.width / 2)));
     const yFactor = Math.max(-1, Math.min(1, dy / (face.height / 1.5)));
 
-    // --- Define Animation Components ---
     const tilt = xFactor * 4; 
     const verticalOffset = yFactor * (yFactor < 0 ? 15 : 8); 
     const frownAngle = yFactor > 0 ? yFactor * 10 : 0; 
@@ -148,19 +135,18 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const leftSqueeze = xFactor > 0 ? xFactor * maxSqueeze : 0;
     const rightSqueeze = xFactor < 0 ? xFactor * maxSqueeze : 0;
 
-    // --- Combine into final transforms ---
-    const leftEyebrowTransform = {
-      angle: tilt + frownAngle,
-      dx: leftSqueeze,
-      dy: verticalOffset + seeSawOffset,
+    return {
+      left: {
+        angle: tilt + frownAngle,
+        dx: leftSqueeze,
+        dy: verticalOffset + seeSawOffset,
+      },
+      right: {
+        angle: tilt - frownAngle,
+        dx: rightSqueeze,
+        dy: verticalOffset - seeSawOffset,
+      }
     };
-    const rightEyebrowTransform = {
-      angle: tilt - frownAngle,
-      dx: rightSqueeze,
-      dy: verticalOffset - seeSawOffset,
-    };
-    
-    return { left: leftEyebrowTransform, right: rightEyebrowTransform };
   }
 
   const leftPupil = getPupilTransform(elementPositions.leftEye);
@@ -169,7 +155,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
 
   const eyeWhiteColor = isDarkMode ? '#000000' : '#EEEEEE';
 
-  // SVG coordinates for eyebrow rotation centers.
   const leftEyebrowSVG_CX = 286;
   const leftEyebrowSVG_CY = 238;
   const rightEyebrowSVG_CX = 574;
@@ -186,7 +171,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </clipPath>
       </defs>
       
-      {/* Left Eye */}
       <path d="M197 457.91C122.881 463.524 70.2463 480.789 69.4998 421.41C68.7534 362.031 166.773 307.424 238.5 315.91C297.973 322.946 356.5 355.91 347.5 428.41C341.052 480.354 271.118 452.296 197 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#leftEyeClip)">
         <g transform={`translate(${leftPupil.dx}, ${leftPupil.dy})`}>
@@ -194,7 +178,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
       
-      {/* Left Eyebrow */}
       <g 
         style={{ transition: 'transform 0.1s ease-out' }} 
         transform={`
@@ -207,7 +190,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
 
-      {/* Right Eye */}
       <path d="M650.904 457.91C576.786 463.524 524.151 480.789 523.404 421.41C522.658 362.031 620.677 307.424 692.404 315.91C751.877 322.946 810.404 355.91 801.404 428.41C794.956 480.354 725.023 452.296 650.904 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
       <g clipPath="url(#rightEyeClip)">
         <g transform={`translate(${rightPupil.dx}, ${rightPupil.dy})`}>
@@ -215,7 +197,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
       
-      {/* Right Eyebrow */}
       <g 
         style={{ transition: 'transform 0.1s ease-out' }} 
         transform={`
@@ -228,7 +209,6 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
       
-      {/* Mouth */}
       <path transform="scale(1.43) translate(-4, -3)" d="M303.755 322.279C303.755 322.279 306.533 301.467 315.204 302.897C317.611 303.294 319.874 305.306 321.63 307.387C322.882 308.872 326.005 308.326 326.714 306.517C327.558 304.369 328.793 302.219 330.549 301.169C337.703 296.892 347.191 314.644 347.191 314.644" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" opacity="1" pathLength="1" strokeDashoffset="0px" strokeDasharray="1px 1px"></path>
     </svg>
   );

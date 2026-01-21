@@ -1,3 +1,4 @@
+
 import React, { useState, memo } from 'react';
 import { Header } from './components/layout/Header.tsx';
 import { LeftPanel } from './components/layout/LeftPanel.tsx';
@@ -18,7 +19,7 @@ const MemoizedSkillsSection = memo(SkillsSection);
 const MemoizedFooter = memo(Footer);
 
 export default function App() {
-  const { position: cursorPosition, isHoveringLink } = useMousePosition();
+  const { position: cursorPosition, docPosition: docCursorPosition, isHoveringLink } = useMousePosition();
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -103,7 +104,7 @@ export default function App() {
 
         <ContactSection 
           isDarkMode={isDarkMode} 
-          cursorPosition={cursorPosition}
+          cursorPosition={docCursorPosition}
         />
         
         <MemoizedFooter isDarkMode={isDarkMode} />
