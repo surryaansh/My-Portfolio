@@ -41,9 +41,9 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
       
       {/* 
           Row for Description and GitHub link. 
-          Reduced mt from 4 (16px) to mt-[13px] to shift it upwards slightly.
+          Reduced mt from 13px to mt-[5px] to shift it upwards by ~1%.
       */}
-      <div className="flex justify-between items-start mt-[13px] mb-6 w-full animate-project-description" key={selectedProject}>
+      <div className="flex justify-between items-start mt-[5px] mb-6 w-full animate-project-description" key={selectedProject}>
         <div 
           className={`uppercase leading-relaxed max-w-[261px] lg:max-w-[298px] ${grayTextClasses}`} 
           style={{ fontSize: '11.85px' }}
@@ -59,14 +59,17 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
             className={`transition-colors duration-300 hover:text-[#FF4500] ${grayTextClasses} flex-shrink-0 pt-[3px]`}
             aria-label={`View ${selectedProject} on GitHub`}
           >
-            {/* Increased height to 20px (10%+ increase from 18px) */}
-            <GithubArrowIcon className="h-[20px]" />
+            {/* Increased height to 22px (exactly 10% increase from 20px) */}
+            <GithubArrowIcon className="h-[22px]" />
           </a>
         )}
       </div>
       
-      {/* Image Container - Min-height reduced by 3% to match section aspect ratio reduction */}
-      <div className="flex-1 relative w-full h-full min-h-[282px] lg:min-h-[395px] overflow-hidden">
+      {/* 
+          Image Container - Min-height reduced to reflect new section height.
+          Applied translate-y-[-4%] to shift project images upwards.
+      */}
+      <div className="flex-1 relative w-full h-full min-h-[274px] lg:min-h-[383px] overflow-hidden transform -translate-y-[4%]">
         {PROJECTS_DATA.map((project) => {
           const isSelected = project.name === selectedProject;
           const { layout } = project;
