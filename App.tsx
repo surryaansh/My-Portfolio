@@ -1,4 +1,3 @@
-
 import React, { useState, memo } from 'react';
 import { Header } from './components/layout/Header.tsx';
 import { LeftPanel } from './components/layout/LeftPanel.tsx';
@@ -26,6 +25,7 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState<string>(PROJECTS_DATA[0].name);
   
   const handleThemeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Local type cast to avoid needing types.d.ts
     const doc = document as any;
 
     if (!doc.startViewTransition) {
@@ -70,7 +70,7 @@ export default function App() {
   
   return (
     <div 
-      className={`min-h-screen flex flex-col font-sans px-4 md:px-16 pt-8 overflow-x-hidden ${themeClasses}`}
+      className={`min-h-screen flex flex-col font-sans px-4 md:px-16 pt-8 ${themeClasses}`}
       style={{ cursor: isTransitioning ? 'auto' : 'none' }}
     >
       <BlendedCursor 
@@ -80,14 +80,10 @@ export default function App() {
       
       <MemoizedHeader isDarkMode={isDarkMode} toggleDarkMode={handleThemeToggle} />
 
-      <main className="flex-1 flex flex-col min-w-0">
+      <main className="flex-1 flex flex-col">
         <section id="about" className={`flex flex-col lg:flex-row flex-1 divide-y lg:divide-y-0 lg:divide-x ${borderClasses}`}>
-          <div className="flex-1 min-w-0">
-            <MemoizedLeftPanel isDarkMode={isDarkMode} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <RightPanel isDarkMode={isDarkMode} />
-          </div>
+          <MemoizedLeftPanel isDarkMode={isDarkMode} />
+          <RightPanel isDarkMode={isDarkMode} />
         </section>
 
         <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[60vh] divide-y lg:divide-y-0 ${borderClasses}`}>
