@@ -87,7 +87,8 @@ export default function App() {
           <RightPanel isDarkMode={isDarkMode} />
         </section>
 
-        <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[75vh] divide-y lg:divide-y-0 ${borderClasses}`}>
+        {/* Projects Section - Reduced min-height by 3% from 75vh to 72.75vh */}
+        <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[72.75vh] divide-y lg:divide-y-0 ${borderClasses}`}>
             <MemoizedProjectsLeftPanel 
               isDarkMode={isDarkMode}
               selectedProject={selectedProject}

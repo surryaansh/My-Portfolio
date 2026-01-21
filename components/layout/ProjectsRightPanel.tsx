@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { PROJECTS_DATA } from '../../constants/projects.ts';
 
@@ -38,7 +39,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <span>/03</span>
       </div>
       
-      {/* Project Description Block - Shifted 6% down (additional 2%) with 2% tighter width and 3% larger font size */}
+      {/* Project Description Block - Shifted 6% down with matched in-animation (no delay) */}
       <div 
         className={`uppercase leading-relaxed mb-6 max-w-[261px] lg:max-w-[298px] animate-project-description ${grayTextClasses}`} 
         style={{ fontSize: '11.85px' }}
@@ -47,8 +48,8 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         {activeProjectData?.description}
       </div>
       
-      {/* Image Container - Scaled down min-height by ~20% to follow section scaling */}
-      <div className="flex-1 relative w-full h-full min-h-[300px] lg:min-h-[420px] overflow-hidden">
+      {/* Image Container - Reduced min-height by 3% (300->291, 420->407) to follow section aspect ratio adjustment */}
+      <div className="flex-1 relative w-full h-full min-h-[291px] lg:min-h-[407px] overflow-hidden">
         {PROJECTS_DATA.map((project) => {
           const isSelected = project.name === selectedProject;
           const { layout } = project;
