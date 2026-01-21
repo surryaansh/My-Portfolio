@@ -9,15 +9,13 @@ interface InteractiveFaceIconProps {
 
 /**
  * An interactive SVG face icon where the eyes and eyebrows follow the cursor's movement.
- * Uses document-relative coordinates to remain accurate across long scrolling pages.
+ * Uses a unified gaze vector calculated from the face center to ensure coordinated movement.
  */
 export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursorPosition, isDarkMode }) => {
   const faceRef = useRef<SVGSVGElement>(null);
 
   const [elementPositions, setElementPositions] = useState({
     face: { x: 0, y: 0, width: 0, height: 0 },
-    leftEye: { x: 0, y: 0 },
-    rightEye: { x: 0, y: 0 },
     scale: { x: 1, y: 1 },
   });
 
@@ -41,20 +39,13 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       const scaleX = faceRect.width / viewBox.width;
       const scaleY = faceRect.height / viewBox.height;
 
-      const getDocCoords = (svgX: number, svgY: number) => ({
-        x: docLeft + (svgX - viewBox.x) * scaleX,
-        y: docTop + (svgY - viewBox.y) * scaleY,
-      });
-
       setElementPositions({
         face: { 
           x: docLeft + faceRect.width / 2, 
-          y: docTop + faceRect.height / 2, 
+          y: docTop + (faceRect.height * 0.7), // Shift center slightly down towards eyes
           width: faceRect.width, 
           height: faceRect.height 
         },
-        leftEye: getDocCoords(213, 395),
-        rightEye: getDocCoords(667, 395),
         scale: { x: scaleX, y: scaleY },
       });
     };
@@ -80,32 +71,30 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     };
   }, []);
 
-  const getPupilTransform = (eyeCenter: { x: number; y: number }) => {
-    const { scale } = elementPositions;
-    if (!eyeCenter.x || !eyeCenter.y || scale.x === 0 || scale.y === 0) {
+  /**
+   * Calculates a single unified gaze offset for both eyes.
+   * This ensures coordination as the eyes move as a pair.
+   */
+  const getGazeTransform = () => {
+    const { face, scale } = elementPositions;
+    if (face.width === 0 || face.x === 0 || scale.x === 0 || scale.y === 0) {
       return { dx: 0, dy: 0 };
     }
-    
+
     const maxTravelX = 60;
     const maxTravelY = 30;
-    const sensitivity = 0.4;
+    const sensitivity = 0.35;
 
-    const dx_pixels_raw = cursorPosition.x - eyeCenter.x;
-    const dy_pixels_raw = cursorPosition.y - eyeCenter.y;
+    // Calculate delta relative to face center
+    const dx_raw = (cursorPosition.x - face.x) * sensitivity;
+    const dy_raw = (cursorPosition.y - face.y) * sensitivity;
     
-    let dx_pixels = dx_pixels_raw * sensitivity;
-    let dy_pixels = dy_pixels_raw * sensitivity;
+    // Scale to SVG coordinate space
+    let dx = dx_raw / scale.x;
+    let dy = dy_raw / scale.y;
 
-    if (dx_pixels_raw > 0) {
-      dx_pixels *= 1.8;
-      dy_pixels += dx_pixels_raw * 0.05;
-    }
-    
-    let dx = dx_pixels / scale.x;
-    let dy = dy_pixels / scale.y;
-
+    // Constrain movement to an elliptical bounds
     const ellipseRatio = (dx / maxTravelX) ** 2 + (dy / maxTravelY) ** 2;
-
     if (ellipseRatio > 1) {
       const scaleFactor = 1 / Math.sqrt(ellipseRatio);
       dx *= scaleFactor;
@@ -149,8 +138,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     };
   }
 
-  const leftPupil = getPupilTransform(elementPositions.leftEye);
-  const rightPupil = getPupilTransform(elementPositions.rightEye);
+  const gaze = getGazeTransform();
   const { left: leftEyebrowTransform, right: rightEyebrowTransform } = getEyebrowTransforms();
 
   const eyeWhiteColor = isDarkMode ? '#000000' : '#EEEEEE';
@@ -171,13 +159,17 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </clipPath>
       </defs>
       
+      {/* Left Eye White */}
       <path d="M197 457.91C122.881 463.524 70.2463 480.789 69.4998 421.41C68.7534 362.031 166.773 307.424 238.5 315.91C297.973 322.946 356.5 355.91 347.5 428.41C341.052 480.354 271.118 452.296 197 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
+      
+      {/* Left Pupil - Coordinated movement */}
       <g clipPath="url(#leftEyeClip)">
-        <g transform={`translate(${leftPupil.dx}, ${leftPupil.dy})`}>
+        <g transform={`translate(${gaze.dx}, ${gaze.dy})`}>
           <ellipse cx="213" cy="395" rx="55" ry="45" fill="currentColor"/>
         </g>
       </g>
       
+      {/* Left Eyebrow */}
       <g 
         style={{ transition: 'transform 0.1s ease-out' }} 
         transform={`
@@ -190,13 +182,17 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
 
+      {/* Right Eye White */}
       <path d="M650.904 457.91C576.786 463.524 524.151 480.789 523.404 421.41C522.658 362.031 620.677 307.424 692.404 315.91C751.877 322.946 810.404 355.91 801.404 428.41C794.956 480.354 725.023 452.296 650.904 457.91Z" fill={eyeWhiteColor} stroke="currentColor" strokeWidth="3"></path>
+      
+      {/* Right Pupil - Coordinated movement */}
       <g clipPath="url(#rightEyeClip)">
-        <g transform={`translate(${rightPupil.dx}, ${rightPupil.dy})`}>
+        <g transform={`translate(${gaze.dx}, ${gaze.dy})`}>
           <ellipse cx="667" cy="395" rx="55" ry="45" fill="currentColor"/>
         </g>
       </g>
       
+      {/* Right Eyebrow */}
       <g 
         style={{ transition: 'transform 0.1s ease-out' }} 
         transform={`
@@ -209,6 +205,7 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
       
+      {/* Nose */}
       <path transform="scale(1.43) translate(-4, -3)" d="M303.755 322.279C303.755 322.279 306.533 301.467 315.204 302.897C317.611 303.294 319.874 305.306 321.63 307.387C322.882 308.872 326.005 308.326 326.714 306.517C327.558 304.369 328.793 302.219 330.549 301.169C337.703 296.892 347.191 314.644 347.191 314.644" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" opacity="1" pathLength="1" strokeDashoffset="0px" strokeDasharray="1px 1px"></path>
     </svg>
   );
