@@ -41,9 +41,9 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
       
       {/* 
           Row for Description and GitHub link. 
-          mt-4 brings it down slightly from the metadata header.
+          Reduced mt from 4 (16px) to mt-[13px] to shift it upwards slightly.
       */}
-      <div className="flex justify-between items-start mt-4 mb-6 w-full animate-project-description" key={selectedProject}>
+      <div className="flex justify-between items-start mt-[13px] mb-6 w-full animate-project-description" key={selectedProject}>
         <div 
           className={`uppercase leading-relaxed max-w-[261px] lg:max-w-[298px] ${grayTextClasses}`} 
           style={{ fontSize: '11.85px' }}
@@ -59,14 +59,14 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
             className={`transition-colors duration-300 hover:text-[#FF4500] ${grayTextClasses} flex-shrink-0 pt-[3px]`}
             aria-label={`View ${selectedProject} on GitHub`}
           >
-            {/* Increased height to 18px (~5% increase from 17px) */}
-            <GithubArrowIcon className="h-[18px]" />
+            {/* Increased height to 20px (10%+ increase from 18px) */}
+            <GithubArrowIcon className="h-[20px]" />
           </a>
         )}
       </div>
       
-      {/* Image Container */}
-      <div className="flex-1 relative w-full h-full min-h-[291px] lg:min-h-[407px] overflow-hidden">
+      {/* Image Container - Min-height reduced by 3% to match section aspect ratio reduction */}
+      <div className="flex-1 relative w-full h-full min-h-[282px] lg:min-h-[395px] overflow-hidden">
         {PROJECTS_DATA.map((project) => {
           const isSelected = project.name === selectedProject;
           const { layout } = project;
