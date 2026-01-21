@@ -1,11 +1,23 @@
+
 import React, { useState } from 'react';
 
 interface ContactRightPanelProps {
   isDarkMode: boolean;
+  onHoverChange?: (isHovered: boolean) => void;
 }
 
-export const ContactRightPanel: React.FC<ContactRightPanelProps> = ({ isDarkMode }) => {
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
+export const ContactRightPanel: React.FC<ContactRightPanelProps> = ({ isDarkMode, onHoverChange }) => {
+  const [isLocalHovered, setIsLocalHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsLocalHovered(true);
+    onHoverChange?.(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsLocalHovered(false);
+    onHoverChange?.(false);
+  };
 
   const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
   const buttonClasses = `transform -translate-y-1 px-8 py-3 md:px-10 md:py-4 rounded-full text-base md:text-lg font-bold transition-colors duration-300 ease-in-out hover:bg-[#FF4500] ${
@@ -22,14 +34,14 @@ export const ContactRightPanel: React.FC<ContactRightPanelProps> = ({ isDarkMode
         <img
           src="/connect-me.png"
           alt="An abstract, glowing wireframe figure reaching out a hand."
-          className={`w-full h-full object-cover transition-opacity duration-700 ease-in-out ${isButtonHovered ? 'opacity-100' : 'opacity-0'}`}
+          className={`w-full h-full object-cover transition-opacity duration-700 ease-in-out ${isLocalHovered ? 'opacity-100' : 'opacity-0'}`}
         />
         <div className="absolute inset-0 flex items-center justify-center">
             <a 
               href="mailto:suryanshs1804@gmail.com" 
               className={buttonClasses}
-              onMouseEnter={() => setIsButtonHovered(true)}
-              onMouseLeave={() => setIsButtonHovered(false)}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
                 LET'S CONNECT
             </a>
