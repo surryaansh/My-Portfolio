@@ -36,32 +36,32 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
     <div className="w-full lg:col-span-2 flex flex-col lg:pl-6 pt-8 lg:pt-0">
       <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
         <span>03 WORK</span>
-        <div className="flex flex-col items-end">
-          <span>/03</span>
-          {activeProjectData?.githubLink && (
-            <a 
-              href={activeProjectData.githubLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 transition-colors duration-300 hover:text-[#FF4500]"
-              aria-label={`View ${selectedProject} on GitHub`}
-            >
-              <GithubArrowIcon className="w-5 h-auto" />
-            </a>
-          )}
+        <span>/03</span>
+      </div>
+      
+      {/* Integrated row for Description and GitHub link for perfect alignment */}
+      <div className="flex justify-between items-start mb-6 w-full animate-project-description" key={selectedProject}>
+        <div 
+          className={`uppercase leading-relaxed max-w-[261px] lg:max-w-[298px] ${grayTextClasses}`} 
+          style={{ fontSize: '11.85px' }}
+        >
+          {activeProjectData?.description}
         </div>
+        
+        {activeProjectData?.githubLink && (
+          <a 
+            href={activeProjectData.githubLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`transition-colors duration-300 hover:text-[#FF4500] ${grayTextClasses} flex-shrink-0 pt-0.5`}
+            aria-label={`View ${selectedProject} on GitHub`}
+          >
+            <GithubArrowIcon className="h-4" />
+          </a>
+        )}
       </div>
       
-      {/* Project Description Block - Shifted 6% down with matched in-animation (no delay) */}
-      <div 
-        className={`uppercase leading-relaxed mb-6 max-w-[261px] lg:max-w-[298px] animate-project-description ${grayTextClasses}`} 
-        style={{ fontSize: '11.85px' }}
-        key={selectedProject}
-      >
-        {activeProjectData?.description}
-      </div>
-      
-      {/* Image Container - Reduced min-height by 3% (300->291, 420->407) to follow section aspect ratio adjustment */}
+      {/* Image Container */}
       <div className="flex-1 relative w-full h-full min-h-[291px] lg:min-h-[407px] overflow-hidden">
         {PROJECTS_DATA.map((project) => {
           const isSelected = project.name === selectedProject;
@@ -72,7 +72,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
               key={project.name} 
               className={`absolute inset-0 w-full h-full ${isSelected ? 'z-10' : 'z-0'} pointer-events-none`}
             >
-              {/* Highlight Image (Image 4) - Rendered first to ensure it's ALWAYS the background layer */}
+              {/* Highlight Image (Image 4) */}
               {layout.img4 && project.images.length > 0 && (
                 <div className={`absolute inset-0 transition-all ${getEntranceClasses(isSelected, 3)}`}>
                   <img
@@ -83,7 +83,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
                 </div>
               )}
 
-              {/* Image 1 - Rendered after 4 to overlap it (Fixes MyDash) */}
+              {/* Image 1 */}
               {layout.img1 && project.images[0] && (
                 <div className={`absolute inset-0 transition-all ${getEntranceClasses(isSelected, 0)}`}>
                   <img
@@ -105,7 +105,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
                 </div>
               )}
 
-              {/* Image 3 - Rendered last to overlap everything else (Barkchain/SuruGPT) */}
+              {/* Image 3 */}
               {layout.img3 && project.images[2] && (
                 <div className={`absolute inset-0 transition-all ${getEntranceClasses(isSelected, 2)}`}>
                   <img
