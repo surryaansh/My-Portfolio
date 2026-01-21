@@ -10,7 +10,8 @@ interface InteractiveFaceIconProps {
 
 /**
  * An interactive SVG face icon.
- * Features cross-fading eyebrows and pupils that pull inward/downward on hover.
+ * Features a dual-layer cross-fade for eyebrows to ensure responsive tracking
+ * and a perfect slanted flinch pose without jumpy transitions.
  */
 export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursorPosition, isDarkMode, isConnectHovered = false }) => {
   const faceRef = useRef<SVGSVGElement>(null);
@@ -73,10 +74,10 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     if (face.width === 0 || face.x === 0) return { left: { dx: 0, dy: 0 }, right: { dx: 0, dy: 0 } };
 
     const maxTravelX = 60;
-    const maxTravelY = 30;
-    const sensitivity = 0.42; 
+    const maxTravelY = 35;
+    const sensitivity = 0.45; 
 
-    // Calculate raw tracking
+    // Raw tracking based on mouse
     const rawDx = ((cursorPosition.x - face.x) * sensitivity) / scale.x;
     const rawDy = ((cursorPosition.y - face.y) * sensitivity) / scale.y;
 
@@ -92,17 +93,17 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
       return { dx: tx, dy: ty };
     };
 
-    // Apply the "Flinch Pull": Closer to center and slightly downwards
-    const pullX = 25;
-    const pullY = 15;
+    // Concentrated pull inward (closer to nose) and downward
+    const pullX = 35;
+    const pullY = 22;
 
-    const leftBase = limit(rawDx + (isConnectHovered ? pullX : 0), rawDy + (isConnectHovered ? pullY : 0));
-    const rightBase = limit(rawDx - (isConnectHovered ? pullX : 0), rawDy + (isConnectHovered ? pullY : 0));
+    const leftFinal = limit(rawDx + (isConnectHovered ? pullX : 0), rawDy + (isConnectHovered ? pullY : 0));
+    const rightFinal = limit(rawDx - (isConnectHovered ? pullX : 0), rawDy + (isConnectHovered ? pullY : 0));
 
-    return { left: leftBase, right: rightBase };
+    return { left: leftFinal, right: rightFinal };
   };
 
-  const getEyebrowTracking = () => {
+  const getTrackingEyebrows = () => {
     const { face } = elementPositions;
     if (face.width === 0 || face.x === 0) return { left: '', right: '' };
 
@@ -111,24 +112,31 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
     const xFactor = Math.max(-1, Math.min(1, dx / (face.width / 2)));
     const yFactor = Math.max(-1, Math.min(1, dy / (face.height / 1.5)));
 
-    const l_dx = xFactor * 15;
-    const l_dy = yFactor * 15;
-    const l_angle = xFactor * 8;
+    const moveX = xFactor * 15;
+    const moveY = yFactor * 12;
+    const rot = xFactor * 8;
 
     return {
-      left: `translate(${l_dx}, ${l_dy}) rotate(${l_angle}, 286, 238)`,
-      right: `translate(${l_dx}, ${l_dy}) rotate(${l_angle}, 574, 239)`
+      left: `translate(${moveX}, ${moveY}) rotate(${rot}, 286, 238)`,
+      right: `translate(${moveX}, ${moveY}) rotate(${rot}, 574, 239)`
     };
   };
 
   const pupils = getPupilTransforms();
-  const trackingEB = getEyebrowTracking();
+  const trackingEB = getTrackingEyebrows();
   const eyeWhiteColor = isDarkMode ? '#000000' : '#EEEEEE';
 
-  const fadeTransition = {
-    transition: 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+  // Shared transition for the cross-fade layers
+  const crossFadeStyle = {
+    transition: 'opacity 0.4s ease-in-out, transform 0.4s ease-in-out',
     willChange: 'opacity, transform'
   };
+
+  // Fixed pivot points for standard SVG group rotation
+  const EB_L_CX = 286;
+  const EB_L_CY = 238;
+  const EB_R_CX = 574;
+  const EB_R_CY = 239;
 
   return (
     <svg ref={faceRef} fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="67 105 745 364">
@@ -152,18 +160,18 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
       
-      {/* Left Eyebrow - Tracking Layer */}
+      {/* Left Eyebrow - Tracking Layer (Fades OUT on hover) */}
       <g 
         transform={trackingEB.left} 
-        style={{ ...fadeTransition, opacity: isConnectHovered ? 0 : 1 }}
+        style={{ ...crossFadeStyle, opacity: isConnectHovered ? 0 : 1 }}
       >
         <path d="M371.513 318.177L358.587 329.736C350.61 336.869 338.44 336.494 330.918 328.883L200.698 197.134C192.798 189.141 192.994 176.221 201.134 168.472L223.07 147.588C231.394 139.662 244.659 140.327 252.149 149.045L373.359 290.12C380.486 298.415 379.665 310.887 371.513 318.177Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(-40, 10) rotate(-25, 286, 238)"></path>
       </g>
-      
-      {/* Left Eyebrow - Flinched Layer */}
+
+      {/* Left Eyebrow - Flinch Layer (Fades IN and Converges on hover) */}
       <g 
-        transform="translate(-15, -5) rotate(-10, 286, 238)"
-        style={{ ...fadeTransition, opacity: isConnectHovered ? 1 : 0 }}
+        transform={`translate(35, 25) rotate(22, ${EB_L_CX}, ${EB_L_CY})`} 
+        style={{ ...crossFadeStyle, opacity: isConnectHovered ? 1 : 0 }}
       >
         <path d="M371.513 318.177L358.587 329.736C350.61 336.869 338.44 336.494 330.918 328.883L200.698 197.134C192.798 189.141 192.994 176.221 201.134 168.472L223.07 147.588C231.394 139.662 244.659 140.327 252.149 149.045L373.359 290.12C380.486 298.415 379.665 310.887 371.513 318.177Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(-40, 10) rotate(-25, 286, 238)"></path>
       </g>
@@ -179,18 +187,18 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         </g>
       </g>
       
-      {/* Right Eyebrow - Tracking Layer */}
+      {/* Right Eyebrow - Tracking Layer (Fades OUT on hover) */}
       <g 
         transform={trackingEB.right}
-        style={{ ...fadeTransition, opacity: isConnectHovered ? 0 : 1 }}
+        style={{ ...crossFadeStyle, opacity: isConnectHovered ? 0 : 1 }}
       >
         <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(100, 0) rotate(30, 574, 239)"></path>
       </g>
 
-      {/* Right Eyebrow - Flinched Layer */}
+      {/* Right Eyebrow - Flinch Layer (Fades IN and Converges on hover) */}
       <g 
-        transform="translate(15, -5) rotate(10, 574, 239)"
-        style={{ ...fadeTransition, opacity: isConnectHovered ? 1 : 0 }}
+        transform={`translate(-35, 25) rotate(-22, ${EB_R_CX}, ${EB_R_CY})`}
+        style={{ ...crossFadeStyle, opacity: isConnectHovered ? 1 : 0 }}
       >
         <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(100, 0) rotate(30, 574, 239)"></path>
       </g>
