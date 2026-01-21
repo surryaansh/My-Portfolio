@@ -39,12 +39,15 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <span>/03</span>
       </div>
       
-      {/* Project Description Block - Tightened width for better alignment */}
-      <div className={`text-[10px] uppercase leading-relaxed mb-6 max-w-[280px] lg:max-w-[320px] animate-fade-in ${grayTextClasses}`} key={selectedProject}>
+      {/* Project Description Block - Font increased by 5%, Width tightened by 5% */}
+      <div 
+        className={`text-[10.5px] uppercase leading-relaxed mb-6 max-w-[266px] lg:max-w-[304px] animate-fade-in ${grayTextClasses}`} 
+        key={selectedProject}
+      >
         {activeProjectData?.description}
       </div>
       
-      {/* Image Container - Further reduced min-height for a more compact appearance */}
+      {/* Image Container - Height reduced by ~20% for a tighter aspect ratio */}
       <div className="flex-1 relative w-full h-full min-h-[250px] lg:min-h-[340px] overflow-hidden">
         {PROJECTS_DATA.map((project) => {
           const isSelected = project.name === selectedProject;
@@ -66,7 +69,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
                 </div>
               )}
 
-              {/* Image 1 - Rendered after 4 to overlap it (Fixes MyDash) */}
+              {/* Image 1 - Rendered after 4 to overlap it */}
               {layout.img1 && project.images[0] && (
                 <div className={`absolute inset-0 transition-all ${getEntranceClasses(isSelected, 0)}`}>
                   <img
@@ -88,7 +91,7 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
                 </div>
               )}
 
-              {/* Image 3 - Rendered last to overlap everything else (Barkchain/SuruGPT) */}
+              {/* Image 3 - Rendered last to overlap everything else */}
               {layout.img3 && project.images[2] && (
                 <div className={`absolute inset-0 transition-all ${getEntranceClasses(isSelected, 2)}`}>
                   <img
