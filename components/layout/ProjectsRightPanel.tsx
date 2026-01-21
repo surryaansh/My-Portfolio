@@ -10,6 +10,8 @@ interface ProjectsRightPanelProps {
 export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMode, selectedProject }) => {
   const grayTextClasses = `transition-colors duration-300 ease-in-out ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`;
   
+  const activeProjectData = PROJECTS_DATA.find(p => p.name === selectedProject);
+
   /**
    * Generates animation classes for the ghost wrapper.
    * This handles the staggered entrance/exit of the project images.
@@ -35,6 +37,11 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
       <div className={`flex justify-between text-[10px] py-2 ${grayTextClasses}`}>
         <span>03 WORK</span>
         <span>/03</span>
+      </div>
+      
+      {/* Project Description Block */}
+      <div className={`text-[10px] uppercase leading-relaxed mb-4 max-w-[280px] lg:max-w-sm animate-fade-in ${grayTextClasses}`} key={selectedProject}>
+        {activeProjectData?.description}
       </div>
       
       <div className="flex-1 relative w-full h-full overflow-hidden">
