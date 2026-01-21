@@ -39,10 +39,10 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <span>/03</span>
       </div>
       
-      {/* Project Description Block - Increased font size by 5% and tightened width by 5% */}
+      {/* Project Description Block - Increased font size by an additional 10% for improved legibility */}
       <div 
         className={`uppercase leading-relaxed mb-6 max-w-[266px] lg:max-w-[304px] animate-fade-in ${grayTextClasses}`} 
-        style={{ fontSize: '10.5px' }}
+        style={{ fontSize: '11.5px' }}
         key={selectedProject}
       >
         {activeProjectData?.description}
