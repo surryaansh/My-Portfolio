@@ -191,9 +191,9 @@ export const InteractiveFaceIcon: React.FC<InteractiveFaceIconProps> = ({ cursor
         >
           <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(100, 0) rotate(30, 574, 239)"></path>
         </g>
-        {/* Flinch pose brow - Moved closer to center (-72) and downwards (15) */}
+        {/* Flinch pose brow - Adjusted position: 3% rightwards and 2% downwards from (-72, 15) */}
         <g 
-          transform={`translate(-72, 15) rotate(-32, ${EB_R_CX}, ${EB_R_CY})`}
+          transform={`translate(-49.65, 22.28) rotate(-32, ${EB_R_CX}, ${EB_R_CY})`}
           style={{ ...crossFadeStyle, opacity: isConnectHovered ? 1 : 0 }}
         >
           <path d="M603.446 147.589L497.186 306.039C491.008 315.251 493.468 327.726 502.679 333.903L507.902 337.406C516.692 343.3 528.548 341.362 535.003 332.974L651.597 181.453C658.674 172.256 656.505 158.991 646.866 152.527L631.311 142.095C622.099 135.918 609.624 138.377 603.446 147.589Z" fill="currentColor" stroke="currentColor" strokeWidth="10" transform="translate(100, 0) rotate(30, 574, 239)"></path>
