@@ -39,8 +39,11 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
         <span>/03</span>
       </div>
       
-      {/* Integrated row for Description and GitHub link for perfect alignment */}
-      <div className="flex justify-between items-start mb-6 w-full animate-project-description" key={selectedProject}>
+      {/* 
+          Row for Description and GitHub link. 
+          mt-4 brings it down slightly from the metadata header.
+      */}
+      <div className="flex justify-between items-start mt-4 mb-6 w-full animate-project-description" key={selectedProject}>
         <div 
           className={`uppercase leading-relaxed max-w-[261px] lg:max-w-[298px] ${grayTextClasses}`} 
           style={{ fontSize: '11.85px' }}
@@ -53,10 +56,11 @@ export const ProjectsRightPanel: React.FC<ProjectsRightPanelProps> = ({ isDarkMo
             href={activeProjectData.githubLink}
             target="_blank"
             rel="noopener noreferrer"
-            className={`transition-colors duration-300 hover:text-[#FF4500] ${grayTextClasses} flex-shrink-0 pt-0.5`}
+            className={`transition-colors duration-300 hover:text-[#FF4500] ${grayTextClasses} flex-shrink-0 pt-[3px]`}
             aria-label={`View ${selectedProject} on GitHub`}
           >
-            <GithubArrowIcon className="h-4" />
+            {/* Increased height to 18px (~5% increase from 17px) */}
+            <GithubArrowIcon className="h-[18px]" />
           </a>
         )}
       </div>
