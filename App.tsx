@@ -82,22 +82,25 @@ export default function App() {
       <MemoizedHeader isDarkMode={isDarkMode} toggleDarkMode={handleThemeToggle} />
 
       <main className="flex-1 flex flex-col">
-        <section id="about" className={`flex flex-col lg:flex-row flex-1 divide-y lg:divide-y-0 lg:divide-x ${borderClasses}`}>
+        {/* About Section */}
+        <section id="about" className={`flex flex-col lg:flex-row flex-1 lg:divide-x ${borderClasses}`}>
           <MemoizedLeftPanel isDarkMode={isDarkMode} />
           <RightPanel isDarkMode={isDarkMode} />
         </section>
 
-        {/* Projects Section - Reduced height by 3% (70.5vh -> 68.5vh) */}
-        <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[68.5vh] divide-y lg:divide-y-0 ${borderClasses}`}>
+        {/* Projects Section - Mobile: Stacked, Desktop: Grid (1/3 List, 2/3 View) */}
+        <section id="projects" className={`flex flex-col lg:grid lg:grid-cols-3 flex-1 border-t min-h-[68.5vh] lg:divide-x ${borderClasses}`}>
             <MemoizedProjectsLeftPanel 
               isDarkMode={isDarkMode}
               selectedProject={selectedProject}
               setSelectedProject={setSelectedProject}
             />
-            <ProjectsRightPanel
-              isDarkMode={isDarkMode} 
-              selectedProject={selectedProject}
-            />
+            <div className="lg:col-span-2 flex flex-col">
+              <ProjectsRightPanel
+                isDarkMode={isDarkMode} 
+                selectedProject={selectedProject}
+              />
+            </div>
         </section>
         
         <MemoizedSkillsSection isDarkMode={isDarkMode} />
